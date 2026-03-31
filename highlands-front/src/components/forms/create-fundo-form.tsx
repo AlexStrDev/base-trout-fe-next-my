@@ -15,9 +15,7 @@ export function CreateFundoForm({ farmId }: Props) {
   return (
     <form action={formAction} className="space-y-5">
       <input type="hidden" name="farm_id" value={farmId} />
-
       <FormAlert error={state.error} />
-
       <InputField
         name="name"
         label="Nombre del fundo"
@@ -25,7 +23,6 @@ export function CreateFundoForm({ farmId }: Props) {
         error={state.fieldErrors?.name}
         required
       />
-
       <div className="flex justify-end gap-3 pt-2">
         <SubmitButton>Crear Fundo</SubmitButton>
       </div>
