@@ -11,7 +11,7 @@ import type {
   SamplingItem,
 } from './types';
 
-const API_URL = process.env.API_URL || 'http://localhost:3000/api';
+const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000/api';
 
 // ── Base fetcher con tipado genérico ───────────────────────────────
 
@@ -62,6 +62,7 @@ export async function getFarms(
 ): Promise<PaginatedResult<FarmItem>> {
   return fetcher('/trout/farm', {
     params: { user_id: userId, page: String(page), page_size: String(pageSize) },
+    next: { tags: ['farms'] },
   });
 }
 
@@ -71,6 +72,7 @@ export async function getFarmSummary(
 ): Promise<FarmSummary> {
   return fetcher('/trout/farm/summary', {
     params: { user_id: userId, farm_id: farmId },
+    next: { tags: [`farm-${farmId}`] },
   });
 }
 
@@ -98,6 +100,7 @@ export async function getFundos(
       page: String(page),
       page_size: String(pageSize),
     },
+    next: { tags: [`fundos-${farmId}`] },
   });
 }
 
@@ -108,6 +111,7 @@ export async function getFundoSummary(
 ): Promise<FundoSummary> {
   return fetcher('/trout/fundo/summary', {
     params: { user_id: userId, farm_id: farmId, fundo_id: fundoId },
+    next: { tags: [`fundo-${fundoId}`] },
   });
 }
 
@@ -137,6 +141,7 @@ export async function getSectors(
       page: String(page),
       page_size: String(pageSize),
     },
+    next: { tags: [`sectors-${fundoId}`] },
   });
 }
 
@@ -146,6 +151,7 @@ export async function getSectorSummary(
 ): Promise<SectorSummary> {
   return fetcher('/trout/sector/summary', {
     params: { user_id: userId, sector_id: sectorId },
+    next: { tags: [`sector-${sectorId}`] },
   });
 }
 
@@ -177,6 +183,7 @@ export async function getCohorts(
       page: String(page),
       page_size: String(pageSize),
     },
+    next: { tags: [`cohorts-${sectorId}`] },
   });
 }
 
@@ -185,6 +192,7 @@ export async function getCohortSummary(
 ): Promise<CohortSummary> {
   return fetcher('/trout/cohort/summary', {
     params: { cohort_id: cohortId },
+    next: { tags: [`cohort-${cohortId}`] },
   });
 }
 
@@ -217,6 +225,7 @@ export async function getSamplings(
       page: String(page),
       page_size: String(pageSize),
     },
+    next: { tags: [`samplings-${cohortId}`] },
   });
 }
 

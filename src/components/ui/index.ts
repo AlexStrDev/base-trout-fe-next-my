@@ -1,3 +1,5 @@
+export { EntityList } from './entity-list';
+export { Section } from './section';
 export { StatCard } from './stat-card';
 export { StatusBadge, StageBadge } from './badge';
 export { Breadcrumbs, type BreadcrumbItem } from './breadcrumbs';

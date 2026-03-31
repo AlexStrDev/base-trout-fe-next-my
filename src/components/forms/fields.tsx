@@ -1,5 +1,52 @@
 import { cn } from '@/lib/utils';
+import { AlertCircle, CheckCircle2 } from 'lucide-react';
 import type { InputHTMLAttributes, SelectHTMLAttributes, TextareaHTMLAttributes } from 'react';
+
+// ── Shared class builder ───────────────────────────────────────────
+
+function fieldInputClasses(error?: string, extra?: string) {
+  return cn(
+    'block w-full rounded-lg border bg-surface-overlay px-3.5 py-2.5 text-sm text-text-primary',
+    'placeholder:text-text-muted/60 transition-colors duration-200',
+    'focus:outline-none focus:ring-2 focus:ring-lake-500/40 focus:border-lake-600',
+    error
+      ? 'border-danger-600/50 focus:ring-danger-500/40'
+      : 'border-border hover:border-border-light',
+    extra,
+  );
+}
+
+// ── FormAlert ──────────────────────────────────────────────────────
+
+interface FormAlertProps {
+  error?: string;
+  success?: boolean;
+  successMessage?: string;
+}
+
+export function FormAlert({
+  error,
+  success,
+  successMessage = 'Operación realizada correctamente',
+}: FormAlertProps) {
+  if (error) {
+    return (
+      <div className="flex items-center gap-2 rounded-lg border border-danger-600/30 bg-danger-600/10 px-4 py-3 text-sm text-danger-500">
+        <AlertCircle className="h-4 w-4 shrink-0" />
+        {error}
+      </div>
+    );
+  }
+  if (success) {
+    return (
+      <div className="flex items-center gap-2 rounded-lg border border-lake-700/30 bg-lake-900/30 px-4 py-3 text-sm text-lake-300">
+        <CheckCircle2 className="h-4 w-4 shrink-0" />
+        {successMessage}
+      </div>
+    );
+  }
+  return null;
+}
 
 // ── Input ──────────────────────────────────────────────────────────
 
@@ -15,18 +62,7 @@ export function InputField({ label, error, className, id, ...props }: InputField
       <label htmlFor={fieldId} className="block text-sm font-medium text-text-secondary">
         {label}
       </label>
-      <input
-        id={fieldId}
-        className={cn(
-          'block w-full rounded-lg border bg-surface-overlay px-3.5 py-2.5 text-sm text-text-primary',
-          'placeholder:text-text-muted/60 transition-colors duration-200',
-          'focus:outline-none focus:ring-2 focus:ring-lake-500/40 focus:border-lake-600',
-          error
-            ? 'border-danger-600/50 focus:ring-danger-500/40'
-            : 'border-border hover:border-border-light',
-        )}
-        {...props}
-      />
+      <input id={fieldId} className={fieldInputClasses(error)} {...props} />
       {error && <p className="text-xs text-danger-500">{error}</p>}
     </div>
   );
@@ -56,18 +92,7 @@ export function SelectField({
       <label htmlFor={fieldId} className="block text-sm font-medium text-text-secondary">
         {label}
       </label>
-      <select
-        id={fieldId}
-        className={cn(
-          'block w-full rounded-lg border bg-surface-overlay px-3.5 py-2.5 text-sm text-text-primary',
-          'transition-colors duration-200 appearance-none',
-          'focus:outline-none focus:ring-2 focus:ring-lake-500/40 focus:border-lake-600',
-          error
-            ? 'border-danger-600/50 focus:ring-danger-500/40'
-            : 'border-border hover:border-border-light',
-        )}
-        {...props}
-      >
+      <select id={fieldId} className={fieldInputClasses(error, 'appearance-none')} {...props}>
         {placeholder && (
           <option value="" className="text-text-muted">
             {placeholder}
@@ -100,17 +125,59 @@ export function TextareaField({ label, error, className, id, ...props }: Textare
       </label>
       <textarea
         id={fieldId}
-        className={cn(
-          'block w-full rounded-lg border bg-surface-overlay px-3.5 py-2.5 text-sm text-text-primary',
-          'placeholder:text-text-muted/60 transition-colors duration-200 resize-y min-h-20',
-          'focus:outline-none focus:ring-2 focus:ring-lake-500/40 focus:border-lake-600',
-          error
-            ? 'border-danger-600/50 focus:ring-danger-500/40'
-            : 'border-border hover:border-border-light',
-        )}
+        className={fieldInputClasses(error, 'resize-y min-h-20')}
         {...props}
       />
       {error && <p className="text-xs text-danger-500">{error}</p>}
+    </div>
+  );
+}
+
+// ── WeightRangeFields ──────────────────────────────────────────────
+
+interface WeightRangeFieldsProps {
+  minName: string;
+  maxName: string;
+  minLabel?: string;
+  maxLabel?: string;
+  minPlaceholder?: string;
+  maxPlaceholder?: string;
+  minError?: string;
+  maxError?: string;
+}
+
+export function WeightRangeFields({
+  minName,
+  maxName,
+  minLabel = 'Peso mín. (g)',
+  maxLabel = 'Peso máx. (g)',
+  minPlaceholder = 'Ej: 85.0',
+  maxPlaceholder = 'Ej: 110.0',
+  minError,
+  maxError,
+}: WeightRangeFieldsProps) {
+  return (
+    <div className="grid grid-cols-2 gap-4">
+      <InputField
+        name={minName}
+        label={minLabel}
+        type="number"
+        step="0.01"
+        min="0.01"
+        placeholder={minPlaceholder}
+        error={minError}
+        required
+      />
+      <InputField
+        name={maxName}
+        label={maxLabel}
+        type="number"
+        step="0.01"
+        min="0.01"
+        placeholder={maxPlaceholder}
+        error={maxError}
+        required
+      />
     </div>
   );
 }

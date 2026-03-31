@@ -1,26 +1,27 @@
 'use client';
 
+import { useFormStatus } from 'react-dom';
 import { Loader2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import type { ReactNode } from 'react';
 
 interface SubmitButtonProps {
   children: ReactNode;
-  isPending?: boolean;
   pendingText?: string;
   className?: string;
 }
 
 export function SubmitButton({
   children,
-  isPending = false,
   pendingText = 'Guardando...',
   className,
 }: SubmitButtonProps) {
+  const { pending } = useFormStatus();
+
   return (
     <button
       type="submit"
-      disabled={isPending}
+      disabled={pending}
       className={cn(
         'inline-flex items-center justify-center gap-2 rounded-lg px-5 py-2.5 text-sm font-medium',
         'bg-lake-600 text-white shadow-sm shadow-lake-900/30',
@@ -30,7 +31,7 @@ export function SubmitButton({
         className,
       )}
     >
-      {isPending ? (
+      {pending ? (
         <>
           <Loader2 className="h-4 w-4 animate-spin" />
           {pendingText}

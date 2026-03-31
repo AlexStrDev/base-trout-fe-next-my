@@ -1,9 +1,18 @@
-export const dynamic = 'force-dynamic';
-
 import { notFound } from 'next/navigation';
 import { getFarmSummary, getFundoSummary, getSectors } from '@/lib/api';
-import { getUserId } from '@/lib/utils';
-import { FundoDetailView } from './_components/fundo-detail-view';
+import { getUserId, formatDate, formatNumber } from '@/lib/utils';
+import { LOTE_LABELS } from '@/lib/types';
+import { Breadcrumbs } from '@/components/ui/breadcrumbs';
+import { PageHeader } from '@/components/ui/page-header';
+import { StatCard } from '@/components/ui/stat-card';
+import { DataCard } from '@/components/ui/data-card';
+import { EmptyState } from '@/components/ui/empty-state';
+import { EntityList } from '@/components/ui/entity-list';
+import { Section } from '@/components/ui/section';
+import { StatusBadge } from '@/components/ui/badge';
+import { ModalTrigger } from '@/components/ui/modal-trigger';
+import { CreateSectorForm } from '@/components/forms/create-sector-form';
+import { Fish, Calendar, Maximize2 } from 'lucide-react';
 import type { Metadata } from 'next';
 
 interface Props {
@@ -28,9 +37,9 @@ export default async function FundoDetailPage({ params, searchParams }: Props) {
   const userId = getUserId();
   const page = Math.max(1, Number(pageStr) || 1);
 
-  let initialFarm, initialFundo;
+  let farm, fundo;
   try {
-    [initialFarm, initialFundo] = await Promise.all([
+    [farm, fundo] = await Promise.all([
       getFarmSummary(userId, farmId),
       getFundoSummary(userId, farmId, fundoId),
     ]);
@@ -38,17 +47,71 @@ export default async function FundoDetailPage({ params, searchParams }: Props) {
     notFound();
   }
 
-  const initialSectors = await getSectors(userId, farmId, fundoId, page);
+  const sectors = await getSectors(userId, farmId, fundoId, page);
 
   return (
-    <FundoDetailView
-      userId={userId}
-      farmId={farmId}
-      fundoId={fundoId}
-      page={page}
-      initialFarm={initialFarm!}
-      initialFundo={initialFundo!}
-      initialSectors={initialSectors}
-    />
+    <div className="space-y-8">
+      <Breadcrumbs
+        items={[
+          { label: 'Granjas', href: '/' },
+          { label: farm.name, href: `/farms/${farmId}` },
+          { label: fundo.name },
+        ]}
+      />
+
+      <PageHeader
+        title={fundo.name}
+        description={`Fundo dentro de ${farm.name}`}
+        action={
+          <ModalTrigger title="Nuevo Sector" buttonLabel="Nuevo Sector">
+            <CreateSectorForm farmId={farmId} fundoId={fundoId} />
+          </ModalTrigger>
+        }
+      />
+
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 stagger-children">
+        <StatCard
+          label="Sectores"
+          value={formatNumber(fundo.sector_count)}
+          icon={<Fish className="h-5 w-5" />}
+          variant="lake"
+        />
+        <StatCard
+          label="Creado"
+          value={formatDate(fundo.created_at)}
+          icon={<Calendar className="h-5 w-5" />}
+          variant="default"
+        />
+      </div>
+
+      <Section title="Sectores">
+        <EntityList
+          data={sectors}
+          emptyState={
+            <EmptyState
+              icon={<Fish className="h-6 w-6" />}
+              title="Sin sectores"
+              description="Crea el primer sector (jaula o poza) dentro de este fundo"
+            />
+          }
+          renderItem={(sector) => (
+            <DataCard
+              key={sector.id}
+              href={`/farms/${farmId}/fundos/${fundoId}/sectors/${sector.id}`}
+              title={sector.name}
+              subtitle={`${LOTE_LABELS[sector.type_lote] || sector.type_lote} · ${sector.area} m²`}
+              badge={<StatusBadge status={sector.status} />}
+              stats={[{ label: 'Cohortes', value: sector.cohort_count }]}
+              meta={
+                <div className="flex items-center gap-1 text-xs text-text-muted">
+                  <Maximize2 className="h-3 w-3" />
+                  {sector.area} m²
+                </div>
+              }
+            />
+          )}
+        />
+      </Section>
+    </div>
   );
 }
