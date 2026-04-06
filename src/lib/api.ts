@@ -10,8 +10,9 @@ import type {
   CohortSummary,
   SamplingItem,
 } from './types';
+import { getAccessToken } from './session';
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000/api';
+const API_URL = process.env.API_URL || 'http://localhost:3000/api';
 
 // ── Base fetcher con tipado genérico ───────────────────────────────
 
@@ -33,14 +34,17 @@ async function fetcher<T>(
 
   let url = `${API_URL}${path}`;
   if (params) {
-    const search = new URLSearchParams(params);
-    url += `?${search.toString()}`;
+    url += `?${new URLSearchParams(params)}`;
   }
+
+  // Adjuntar Bearer token desde la sesión (sólo en server components / server actions)
+  const token = await getAccessToken();
 
   const res = await fetch(url, {
     ...fetchOpts,
     headers: {
       'Content-Type': 'application/json',
+      ...(token ? { Authorization: `Bearer ${token}` } : {}),
       ...fetchOpts.headers,
     },
   });
@@ -56,28 +60,24 @@ async function fetcher<T>(
 // ── Farm ───────────────────────────────────────────────────────────
 
 export async function getFarms(
-  userId: string,
   page = 1,
   pageSize = 10,
 ): Promise<PaginatedResult<FarmItem>> {
   return fetcher('/trout/farm', {
-    params: { user_id: userId, page: String(page), page_size: String(pageSize) },
+    params: { page: String(page), page_size: String(pageSize) },
     next: { tags: ['farms'] },
   });
 }
 
-export async function getFarmSummary(
-  userId: string,
-  farmId: string,
-): Promise<FarmSummary> {
+export async function getFarmSummary(farmId: string): Promise<FarmSummary> {
   return fetcher('/trout/farm/summary', {
-    params: { user_id: userId, farm_id: farmId },
+    params: { farm_id: farmId },
     next: { tags: [`farm-${farmId}`] },
   });
 }
 
 export async function createFarm(
-  data: { user_id: string; name: string; location: string },
+  data: { name: string; location: string },
 ): Promise<{ farm_id: string }> {
   return fetcher('/trout/farm', {
     method: 'POST',
@@ -88,14 +88,12 @@ export async function createFarm(
 // ── Fundo ──────────────────────────────────────────────────────────
 
 export async function getFundos(
-  userId: string,
   farmId: string,
   page = 1,
   pageSize = 10,
 ): Promise<PaginatedResult<FundoItem>> {
   return fetcher('/trout/fundo', {
     params: {
-      user_id: userId,
       farm_id: farmId,
       page: String(page),
       page_size: String(pageSize),
@@ -105,12 +103,11 @@ export async function getFundos(
 }
 
 export async function getFundoSummary(
-  userId: string,
   farmId: string,
   fundoId: string,
 ): Promise<FundoSummary> {
   return fetcher('/trout/fundo/summary', {
-    params: { user_id: userId, farm_id: farmId, fundo_id: fundoId },
+    params: { farm_id: farmId, fundo_id: fundoId },
     next: { tags: [`fundo-${fundoId}`] },
   });
 }
@@ -127,7 +124,6 @@ export async function createFundo(
 // ── Sector ─────────────────────────────────────────────────────────
 
 export async function getSectors(
-  userId: string,
   farmId: string,
   fundoId: string,
   page = 1,
@@ -135,7 +131,6 @@ export async function getSectors(
 ): Promise<PaginatedResult<SectorItem>> {
   return fetcher('/trout/sector', {
     params: {
-      user_id: userId,
       farm_id: farmId,
       fundo_id: fundoId,
       page: String(page),
@@ -145,12 +140,9 @@ export async function getSectors(
   });
 }
 
-export async function getSectorSummary(
-  userId: string,
-  sectorId: string,
-): Promise<SectorSummary> {
+export async function getSectorSummary(sectorId: string): Promise<SectorSummary> {
   return fetcher('/trout/sector/summary', {
-    params: { user_id: userId, sector_id: sectorId },
+    params: { sector_id: sectorId },
     next: { tags: [`sector-${sectorId}`] },
   });
 }
@@ -187,9 +179,7 @@ export async function getCohorts(
   });
 }
 
-export async function getCohortSummary(
-  cohortId: string,
-): Promise<CohortSummary> {
+export async function getCohortSummary(cohortId: string): Promise<CohortSummary> {
   return fetcher('/trout/cohort/summary', {
     params: { cohort_id: cohortId },
     next: { tags: [`cohort-${cohortId}`] },

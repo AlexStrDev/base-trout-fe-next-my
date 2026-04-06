@@ -11,17 +11,26 @@ import {
   X,
   Waves,
   BarChart3,
+  LogOut,
+  User,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
+
+interface SidebarProps {
+  email?: string;
+  preferredUsername?: string;
+}
 
 const NAV_ITEMS = [
   { href: '/', label: 'Dashboard', icon: LayoutDashboard },
   { href: '/farms', label: 'Granjas', icon: Warehouse },
 ];
 
-export function Sidebar() {
+export function Sidebar({ email, preferredUsername }: SidebarProps) {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
+
+  const displayName = preferredUsername || email || 'Usuario';
 
   return (
     <>
@@ -106,9 +115,28 @@ export function Sidebar() {
           </div>
         </nav>
 
-        {/* Footer */}
-        <div className="border-t border-border px-5 py-3">
-          <div className="flex items-center gap-2 text-xs text-text-muted">
+        {/* Footer — usuario + logout */}
+        <div className="border-t border-border px-4 py-3 space-y-2">
+          {/* Info de usuario */}
+          <div className="flex items-center gap-2.5 rounded-lg px-2 py-1.5">
+            <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-lake-900/60 text-lake-400">
+              <User className="h-3.5 w-3.5" />
+            </div>
+            <span className="truncate text-xs text-text-secondary font-medium">
+              {displayName}
+            </span>
+          </div>
+
+          {/* Botón logout */}
+          <a
+            href="/api/auth/logout"
+            className="flex w-full items-center gap-2.5 rounded-lg px-2 py-1.5 text-xs text-text-muted hover:text-danger-400 hover:bg-danger-950/30 transition-colors"
+          >
+            <LogOut className="h-3.5 w-3.5 shrink-0" />
+            Cerrar sesión
+          </a>
+
+          <div className="flex items-center gap-2 px-2 text-xs text-text-muted">
             <Waves className="h-3.5 w-3.5 text-lake-500" />
             Trucha Arcoíris
           </div>

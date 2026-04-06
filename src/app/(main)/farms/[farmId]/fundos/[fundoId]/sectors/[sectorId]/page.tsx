@@ -1,6 +1,6 @@
 import { notFound } from 'next/navigation';
 import { getFarmSummary, getFundoSummary, getSectorSummary, getCohorts } from '@/lib/api';
-import { getUserId, formatDate, formatNumber } from '@/lib/utils';
+import { formatDate, formatNumber } from '@/lib/utils';
 import { LOTE_LABELS, STAGE_LABELS } from '@/lib/types';
 import { Breadcrumbs } from '@/components/ui/breadcrumbs';
 import { PageHeader } from '@/components/ui/page-header';
@@ -22,9 +22,8 @@ interface Props {
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { sectorId } = await params;
-  const userId = getUserId();
   try {
-    const sector = await getSectorSummary(userId, sectorId);
+    const sector = await getSectorSummary(sectorId);
     return { title: sector.name };
   } catch {
     return { title: 'Sector' };
@@ -34,15 +33,14 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 export default async function SectorDetailPage({ params, searchParams }: Props) {
   const { farmId, fundoId, sectorId } = await params;
   const { page: pageStr } = await searchParams;
-  const userId = getUserId();
   const page = Math.max(1, Number(pageStr) || 1);
 
   let farm, fundo, sector;
   try {
     [farm, fundo, sector] = await Promise.all([
-      getFarmSummary(userId, farmId),
-      getFundoSummary(userId, farmId, fundoId),
-      getSectorSummary(userId, sectorId),
+      getFarmSummary(farmId),
+      getFundoSummary(farmId, fundoId),
+      getSectorSummary(sectorId),
     ]);
   } catch {
     notFound();

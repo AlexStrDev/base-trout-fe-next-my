@@ -1,5 +1,5 @@
 import { getFarms } from '@/lib/api';
-import { getUserId, formatNumber } from '@/lib/utils';
+import { formatNumber } from '@/lib/utils';
 import { PageHeader } from '@/components/ui/page-header';
 import { StatCard } from '@/components/ui/stat-card';
 import { DataCard } from '@/components/ui/data-card';
@@ -16,8 +16,7 @@ export const metadata: Metadata = {
 export const dynamic = 'force-dynamic';
 
 export default async function DashboardPage() {
-  const userId = getUserId();
-  const farms = await getFarms(userId, 1, 50);
+  const farms = await getFarms(1, 50);
 
   const totalFundos = farms.results.reduce((acc, f) => acc + f.fundo_count, 0);
   const totalSectors = farms.results.reduce((acc, f) => acc + f.sector_count, 0);

@@ -6,7 +6,7 @@ import {
   getCohortSummary,
   getSamplings,
 } from '@/lib/api';
-import { getUserId, formatDate, formatDateTime, formatNumber, formatWeight } from '@/lib/utils';
+import { formatDate, formatDateTime, formatNumber, formatWeight } from '@/lib/utils';
 import { STAGE_LABELS } from '@/lib/types';
 import { Breadcrumbs } from '@/components/ui/breadcrumbs';
 import { PageHeader } from '@/components/ui/page-header';
@@ -51,15 +51,14 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 export default async function CohortDetailPage({ params, searchParams }: Props) {
   const { farmId, fundoId, sectorId, cohortId } = await params;
   const { page: pageStr } = await searchParams;
-  const userId = getUserId();
   const page = Math.max(1, Number(pageStr) || 1);
 
   let farm, fundo, sector, cohort;
   try {
     [farm, fundo, sector, cohort] = await Promise.all([
-      getFarmSummary(userId, farmId),
-      getFundoSummary(userId, farmId, fundoId),
-      getSectorSummary(userId, sectorId),
+      getFarmSummary(farmId),
+      getFundoSummary(farmId, fundoId),
+      getSectorSummary(sectorId),
       getCohortSummary(cohortId),
     ]);
   } catch {

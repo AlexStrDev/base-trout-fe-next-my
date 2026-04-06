@@ -9,7 +9,6 @@ import {
   createCohort,
   createSampling,
 } from '@/lib/api';
-import { getUserId } from '@/lib/utils';
 
 // ── Helpers ────────────────────────────────────────────────────────
 
@@ -46,11 +45,7 @@ export async function createFarmAction(
   }
 
   try {
-    const result = await createFarm({
-      user_id: getUserId(),
-      name: name!,
-      location: location!,
-    });
+    const result = await createFarm({ name: name!, location: location! });
     revalidateTag('farms');
     redirect(`/farms/${result.farm_id}`);
   } catch (err: any) {

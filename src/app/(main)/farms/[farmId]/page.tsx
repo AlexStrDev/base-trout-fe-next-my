@@ -1,6 +1,6 @@
 import { notFound } from 'next/navigation';
 import { getFarmSummary, getFundos } from '@/lib/api';
-import { getUserId, formatDate, formatNumber } from '@/lib/utils';
+import { formatDate, formatNumber } from '@/lib/utils';
 import { Breadcrumbs } from '@/components/ui/breadcrumbs';
 import { PageHeader } from '@/components/ui/page-header';
 import { StatCard } from '@/components/ui/stat-card';
@@ -20,9 +20,8 @@ interface Props {
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { farmId } = await params;
-  const userId = getUserId();
   try {
-    const farm = await getFarmSummary(userId, farmId);
+    const farm = await getFarmSummary(farmId);
     return { title: farm.name };
   } catch {
     return { title: 'Granja' };
@@ -32,17 +31,16 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 export default async function FarmDetailPage({ params, searchParams }: Props) {
   const { farmId } = await params;
   const { page: pageStr } = await searchParams;
-  const userId = getUserId();
   const page = Math.max(1, Number(pageStr) || 1);
 
   let farm;
   try {
-    farm = await getFarmSummary(userId, farmId);
+    farm = await getFarmSummary(farmId);
   } catch {
     notFound();
   }
 
-  const fundos = await getFundos(userId, farmId, page);
+  const fundos = await getFundos(farmId, page);
 
   return (
     <div className="space-y-8">
