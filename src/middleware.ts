@@ -21,7 +21,7 @@ export async function middleware(request: NextRequest) {
   const session = await getIronSession<SessionData>(request, response, sessionOptions);
 
   // Sin sesión → login
-  if (!session.accessToken) {
+  if (!session.refreshToken) {
     return NextResponse.redirect(new URL('/auth/login', request.url));
   }
 

@@ -63,16 +63,16 @@ export async function GET(request: NextRequest) {
   // Guardar sesión
   const response = NextResponse.redirect(new URL('/', request.url));
   const session = await getIronSession<SessionData>(request, response, sessionOptions);
-  session.accessToken = tokens.access_token;
   session.refreshToken = tokens.refresh_token;
   session.sub = payload.sub;
   session.email = payload.email;
   session.preferredUsername = payload.preferred_username;
   session.expiresAt = Date.now() + tokens.expires_in * 1000;
-  await session.save();
-
-  // Limpiar cookie PKCE
+  // Limpiar cookie PKCE ANTES de session.save() para que el append de iron-session
+  // no sea sobreescrito por el headers.set() interno de ResponseCookies.delete()
   response.cookies.delete('oauth_pkce');
+
+  await session.save();
 
   return response;
 }

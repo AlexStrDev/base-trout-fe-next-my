@@ -34,7 +34,6 @@ export async function GET(request: NextRequest) {
   const payloadB64 = tokens.access_token.split('.')[1];
   const payload = JSON.parse(Buffer.from(payloadB64, 'base64url').toString());
 
-  session.accessToken = tokens.access_token;
   session.refreshToken = tokens.refresh_token;
   session.sub = payload.sub;
   session.email = payload.email;
