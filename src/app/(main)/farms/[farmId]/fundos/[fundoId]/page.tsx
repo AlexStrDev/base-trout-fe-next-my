@@ -34,8 +34,8 @@ export default async function FundoDetailPage({ params, searchParams }: Props) {
   const { farmId, fundoId } = await params;
   const { page: pageStr } = await searchParams;
   const page = Math.max(1, Number(pageStr) || 1);
-
   let farm, fundo;
+
   try {
     [farm, fundo] = await Promise.all([
       getFarmSummary(farmId),
@@ -44,7 +44,6 @@ export default async function FundoDetailPage({ params, searchParams }: Props) {
   } catch {
     notFound();
   }
-
   const sectors = await getSectors(farmId, fundoId, page);
 
   return (
@@ -56,7 +55,6 @@ export default async function FundoDetailPage({ params, searchParams }: Props) {
           { label: fundo.name },
         ]}
       />
-
       <PageHeader
         title={fundo.name}
         description={`Fundo dentro de ${farm.name}`}
@@ -66,7 +64,6 @@ export default async function FundoDetailPage({ params, searchParams }: Props) {
           </ModalTrigger>
         }
       />
-
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 stagger-children">
         <StatCard
           label="Sectores"
@@ -81,7 +78,6 @@ export default async function FundoDetailPage({ params, searchParams }: Props) {
           variant="default"
         />
       </div>
-
       <Section title="Sectores">
         <EntityList
           data={sectors}

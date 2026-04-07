@@ -20,18 +20,11 @@ export async function middleware(request: NextRequest) {
   const response = NextResponse.next();
   const session = await getIronSession<SessionData>(request, response, sessionOptions);
 
-  // Sin sesión → login
   if (!session.refreshToken) {
     return NextResponse.redirect(new URL('/auth/login', request.url));
   }
 
-  // Token expirado → intentar refresh
   if (session.expiresAt && Date.now() > session.expiresAt) {
-    if (!session.refreshToken) {
-      return redirectToLogin(request);
-    }
-
-    // Llamar internamente al endpoint de refresh
     const refreshUrl = new URL('/api/auth/refresh', request.url);
     const refreshRes = await fetch(refreshUrl.toString(), {
       headers: { cookie: request.headers.get('cookie') ?? '' },
@@ -40,8 +33,6 @@ export async function middleware(request: NextRequest) {
     if (!refreshRes.ok) {
       return redirectToLogin(request);
     }
-
-    // Reenviar la respuesta con las nuevas cookies de sesión
     const nextRes = NextResponse.next();
     refreshRes.headers.getSetCookie().forEach((cookie) => {
       nextRes.headers.append('set-cookie', cookie);

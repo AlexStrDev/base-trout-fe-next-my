@@ -8,14 +8,12 @@ export async function GET(request: NextRequest) {
   const state = searchParams.get('state');
   const errorParam = searchParams.get('error');
 
-  // Keycloak rechazó el login
   if (errorParam) {
     return NextResponse.redirect(
       new URL(`/auth/login?error=${errorParam}`, request.url),
     );
   }
 
-  // Leer PKCE state guardado en cookie
   const pkceCookie = request.cookies.get('oauth_pkce')?.value;
   if (!pkceCookie || !code) {
     return NextResponse.redirect(new URL('/auth/login?error=bad_request', request.url));
@@ -33,7 +31,6 @@ export async function GET(request: NextRequest) {
     return NextResponse.redirect(new URL('/auth/login?error=state_mismatch', request.url));
   }
 
-  // Intercambiar code por tokens
   const keycloakBase = `${process.env.KEYCLOAK_URL}/realms/${process.env.KEYCLOAK_REALM}`;
   const tokenRes = await fetch(
     `${keycloakBase}/protocol/openid-connect/token`,
@@ -56,20 +53,17 @@ export async function GET(request: NextRequest) {
 
   const tokens = await tokenRes.json();
 
-  // Decodificar payload del JWT (sin verificar firma — ya lo hace el backend)
   const payloadB64 = tokens.access_token.split('.')[1];
   const payload = JSON.parse(Buffer.from(payloadB64, 'base64url').toString());
-
-  // Guardar sesión
   const response = NextResponse.redirect(new URL('/', request.url));
   const session = await getIronSession<SessionData>(request, response, sessionOptions);
+  session.accessToken = tokens.access_token;
+  session.accessTokenExpiresAt = Date.now() + tokens.expires_in * 1000;
   session.refreshToken = tokens.refresh_token;
   session.sub = payload.sub;
   session.email = payload.email;
   session.preferredUsername = payload.preferred_username;
   session.expiresAt = Date.now() + tokens.expires_in * 1000;
-  // Limpiar cookie PKCE ANTES de session.save() para que el append de iron-session
-  // no sea sobreescrito por el headers.set() interno de ResponseCookies.delete()
   response.cookies.delete('oauth_pkce');
 
   await session.save();

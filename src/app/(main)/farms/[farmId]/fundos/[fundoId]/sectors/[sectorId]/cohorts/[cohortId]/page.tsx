@@ -124,8 +124,6 @@ export default async function CohortDetailPage({ params, searchParams }: Props) 
           variant="default"
         />
       </div>
-
-      {/* Last measurement quick view */}
       {cohort.last_sampling_date && (
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-3 stagger-children">
           <StatCard
@@ -148,15 +146,10 @@ export default async function CohortDetailPage({ params, searchParams }: Props) 
           />
         </div>
       )}
-
-      {/* Weight Chart */}
       {samplings.results.length > 0 && (
         <WeightChart samplings={samplings.results} />
       )}
-
-      {/* New sampling form + table */}
       <div className="grid grid-cols-1 gap-8 lg:grid-cols-5">
-        {/* Sampling form */}
         <div className="lg:col-span-2">
           <div className="rounded-xl border border-border bg-surface-card p-6 sticky top-8">
             <h3 className="text-base font-semibold font-display text-text-primary mb-5 flex items-center gap-2">
@@ -166,8 +159,6 @@ export default async function CohortDetailPage({ params, searchParams }: Props) 
             <CreateSamplingForm cohortId={cohortId} />
           </div>
         </div>
-
-        {/* Samplings list */}
         <div className="lg:col-span-3">
           <h3 className="text-base font-semibold font-display text-text-primary mb-4">
             Historial de Mediciones
@@ -181,7 +172,6 @@ export default async function CohortDetailPage({ params, searchParams }: Props) 
             />
           ) : (
             <>
-              {/* Table */}
               <div className="overflow-x-auto rounded-xl border border-border">
                 <table className="w-full text-sm">
                   <thead>
@@ -241,7 +231,6 @@ export default async function CohortDetailPage({ params, searchParams }: Props) 
                   </tbody>
                 </table>
               </div>
-
               <Pagination
                 page={samplings.page}
                 numPages={samplings.num_pages}

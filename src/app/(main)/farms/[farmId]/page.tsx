@@ -39,7 +39,6 @@ export default async function FarmDetailPage({ params, searchParams }: Props) {
   } catch {
     notFound();
   }
-
   const fundos = await getFundos(farmId, page);
 
   return (
@@ -50,7 +49,6 @@ export default async function FarmDetailPage({ params, searchParams }: Props) {
           { label: farm.name },
         ]}
       />
-
       <PageHeader
         title={farm.name}
         description={farm.location}
@@ -60,7 +58,6 @@ export default async function FarmDetailPage({ params, searchParams }: Props) {
           </ModalTrigger>
         }
       />
-
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-3 stagger-children">
         <StatCard
           label="Fundos"
@@ -81,7 +78,6 @@ export default async function FarmDetailPage({ params, searchParams }: Props) {
           variant="default"
         />
       </div>
-
       <Section title="Fundos">
         <EntityList
           data={fundos}

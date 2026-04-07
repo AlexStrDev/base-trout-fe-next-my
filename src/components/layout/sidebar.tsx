@@ -34,7 +34,6 @@ export function Sidebar({ email, preferredUsername }: SidebarProps) {
 
   return (
     <>
-      {/* Mobile toggle */}
       <button
         onClick={() => setOpen(!open)}
         className="fixed top-4 left-4 z-50 flex h-10 w-10 items-center justify-center rounded-lg bg-surface-card border border-border text-text-secondary lg:hidden"
@@ -42,16 +41,12 @@ export function Sidebar({ email, preferredUsername }: SidebarProps) {
       >
         {open ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
       </button>
-
-      {/* Backdrop */}
       {open && (
         <div
           className="fixed inset-0 z-30 bg-black/50 backdrop-blur-sm lg:hidden"
           onClick={() => setOpen(false)}
         />
       )}
-
-      {/* Sidebar */}
       <aside
         className={cn(
           'fixed inset-y-0 left-0 z-40 flex w-64 flex-col border-r border-border bg-surface-raised',
@@ -59,7 +54,6 @@ export function Sidebar({ email, preferredUsername }: SidebarProps) {
           open ? 'translate-x-0' : '-translate-x-full',
         )}
       >
-        {/* Logo */}
         <div className="flex h-16 items-center gap-3 border-b border-border px-5">
           <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-lake-600 shadow-sm shadow-lake-900/40">
             <Fish className="h-5 w-5 text-white" />
@@ -73,8 +67,6 @@ export function Sidebar({ email, preferredUsername }: SidebarProps) {
             </span>
           </div>
         </div>
-
-        {/* Nav links */}
         <nav className="flex-1 overflow-y-auto px-3 py-4">
           <div className="space-y-1">
             {NAV_ITEMS.map((item) => {
@@ -83,7 +75,6 @@ export function Sidebar({ email, preferredUsername }: SidebarProps) {
                   ? pathname === '/'
                   : pathname.startsWith(item.href);
               const Icon = item.icon;
-
               return (
                 <Link
                   key={item.href}
@@ -102,8 +93,6 @@ export function Sidebar({ email, preferredUsername }: SidebarProps) {
               );
             })}
           </div>
-
-          {/* Info box */}
           <div className="mt-8 rounded-xl border border-border bg-surface-card/50 p-4">
             <div className="flex items-center gap-2 text-xs font-medium text-warm-400">
               <BarChart3 className="h-3.5 w-3.5" />
@@ -114,10 +103,7 @@ export function Sidebar({ email, preferredUsername }: SidebarProps) {
             </p>
           </div>
         </nav>
-
-        {/* Footer — usuario + logout */}
         <div className="border-t border-border px-4 py-3 space-y-2">
-          {/* Info de usuario */}
           <div className="flex items-center gap-2.5 rounded-lg px-2 py-1.5">
             <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-lake-900/60 text-lake-400">
               <User className="h-3.5 w-3.5" />
@@ -126,8 +112,6 @@ export function Sidebar({ email, preferredUsername }: SidebarProps) {
               {displayName}
             </span>
           </div>
-
-          {/* Botón logout */}
           <a
             href="/api/auth/logout"
             className="flex w-full items-center gap-2.5 rounded-lg px-2 py-1.5 text-xs text-text-muted hover:text-danger-400 hover:bg-danger-950/30 transition-colors"
@@ -135,7 +119,6 @@ export function Sidebar({ email, preferredUsername }: SidebarProps) {
             <LogOut className="h-3.5 w-3.5 shrink-0" />
             Cerrar sesión
           </a>
-
           <div className="flex items-center gap-2 px-2 text-xs text-text-muted">
             <Waves className="h-3.5 w-3.5 text-lake-500" />
             Trucha Arcoíris

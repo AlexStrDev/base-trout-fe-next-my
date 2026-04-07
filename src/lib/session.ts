@@ -2,13 +2,13 @@ import { getIronSession, type SessionOptions } from 'iron-session';
 import { cookies } from 'next/headers';
 
 export interface SessionData {
-  // NO guardamos accessToken ni idToken — son JWTs grandes que superan los 4096 bytes del cookie.
-  // El access token se obtiene inline via refresh cuando se necesita.
+  accessToken?: string;
+  accessTokenExpiresAt?: number;
   refreshToken?: string;
   sub?: string;
   email?: string;
   preferredUsername?: string;
-  expiresAt?: number; // ms timestamp
+  expiresAt?: number;
 }
 
 export const sessionOptions: SessionOptions = {
@@ -21,15 +21,17 @@ export const sessionOptions: SessionOptions = {
   },
 };
 
-/** Lee la sesión desde server components y server actions. */
 export async function getSession() {
   return getIronSession<SessionData>(await cookies(), sessionOptions);
 }
 
-/** Obtiene un access token fresco llamando al endpoint de token de Keycloak con el refresh token. */
 export async function getAccessToken(): Promise<string | null> {
   const session = await getSession();
   if (!session.refreshToken) return null;
+
+  if (session.accessToken && session.accessTokenExpiresAt && Date.now() < session.accessTokenExpiresAt - 30_000) {
+    return session.accessToken;
+  }
 
   const keycloakBase = `${process.env.KEYCLOAK_URL}/realms/${process.env.KEYCLOAK_REALM}`;
   const res = await fetch(`${keycloakBase}/protocol/openid-connect/token`, {
@@ -44,5 +46,11 @@ export async function getAccessToken(): Promise<string | null> {
 
   if (!res.ok) return null;
   const tokens = await res.json();
+
+  session.accessToken = tokens.access_token;
+  session.accessTokenExpiresAt = Date.now() + tokens.expires_in * 1000;
+  if (tokens.refresh_token) session.refreshToken = tokens.refresh_token;
+  await session.save();
+
   return tokens.access_token ?? null;
 }

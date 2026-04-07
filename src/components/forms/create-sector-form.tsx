@@ -17,9 +17,7 @@ export function CreateSectorForm({ farmId, fundoId }: Props) {
     <form action={formAction} className="space-y-5">
       <input type="hidden" name="fundo_id" value={fundoId} />
       <input type="hidden" name="farm_id" value={farmId} />
-
       <FormAlert error={state.error} />
-
       <InputField
         name="name"
         label="Nombre del sector"
@@ -27,7 +25,6 @@ export function CreateSectorForm({ farmId, fundoId }: Props) {
         error={state.fieldErrors?.name}
         required
       />
-
       <SelectField
         name="type_lote"
         label="Tipo de infraestructura"
@@ -39,7 +36,6 @@ export function CreateSectorForm({ farmId, fundoId }: Props) {
         error={state.fieldErrors?.type_lote}
         required
       />
-
       <InputField
         name="area"
         label="Área (m²)"
@@ -50,7 +46,6 @@ export function CreateSectorForm({ farmId, fundoId }: Props) {
         error={state.fieldErrors?.area}
         required
       />
-
       <div className="flex justify-end gap-3 pt-2">
         <SubmitButton>Crear Sector</SubmitButton>
       </div>

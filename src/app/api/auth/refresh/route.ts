@@ -25,15 +25,19 @@ export async function GET(request: NextRequest) {
   );
 
   if (!tokenRes.ok) {
-    session.destroy();
-    await session.save();
-    return NextResponse.json({ ok: false }, { status: 401 });
+    const failRes = NextResponse.json({ ok: false }, { status: 401 });
+    const failSession = await getIronSession<SessionData>(request, failRes, sessionOptions);
+    failSession.destroy();
+    await failSession.save();
+    return failRes;
   }
 
   const tokens = await tokenRes.json();
   const payloadB64 = tokens.access_token.split('.')[1];
   const payload = JSON.parse(Buffer.from(payloadB64, 'base64url').toString());
 
+  session.accessToken = tokens.access_token;
+  session.accessTokenExpiresAt = Date.now() + tokens.expires_in * 1000;
   session.refreshToken = tokens.refresh_token;
   session.sub = payload.sub;
   session.email = payload.email;

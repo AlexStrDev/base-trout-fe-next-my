@@ -2,8 +2,6 @@ import { cn } from '@/lib/utils';
 import { AlertCircle, CheckCircle2 } from 'lucide-react';
 import type { InputHTMLAttributes, SelectHTMLAttributes, TextareaHTMLAttributes } from 'react';
 
-// ── Shared class builder ───────────────────────────────────────────
-
 function fieldInputClasses(error?: string, extra?: string) {
   return cn(
     'block w-full rounded-lg border bg-surface-overlay px-3.5 py-2.5 text-sm text-text-primary',
@@ -15,8 +13,6 @@ function fieldInputClasses(error?: string, extra?: string) {
     extra,
   );
 }
-
-// ── FormAlert ──────────────────────────────────────────────────────
 
 interface FormAlertProps {
   error?: string;
@@ -48,8 +44,6 @@ export function FormAlert({
   return null;
 }
 
-// ── Input ──────────────────────────────────────────────────────────
-
 interface InputFieldProps extends InputHTMLAttributes<HTMLInputElement> {
   label: string;
   error?: string;
@@ -67,8 +61,6 @@ export function InputField({ label, error, className, id, ...props }: InputField
     </div>
   );
 }
-
-// ── Select ─────────────────────────────────────────────────────────
 
 interface SelectFieldProps extends SelectHTMLAttributes<HTMLSelectElement> {
   label: string;
@@ -109,8 +101,6 @@ export function SelectField({
   );
 }
 
-// ── Textarea ───────────────────────────────────────────────────────
-
 interface TextareaFieldProps extends TextareaHTMLAttributes<HTMLTextAreaElement> {
   label: string;
   error?: string;
@@ -132,8 +122,6 @@ export function TextareaField({ label, error, className, id, ...props }: Textare
     </div>
   );
 }
-
-// ── WeightRangeFields ──────────────────────────────────────────────
 
 interface WeightRangeFieldsProps {
   minName: string;

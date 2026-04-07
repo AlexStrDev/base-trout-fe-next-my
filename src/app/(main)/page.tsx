@@ -32,7 +32,6 @@ export default async function DashboardPage() {
           </Button>
         }
       />
-
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-3 stagger-children">
         <StatCard
           label="Granjas"
@@ -53,8 +52,6 @@ export default async function DashboardPage() {
           variant="warm"
         />
       </div>
-
-      {/* Prediction banner */}
       <div className="relative overflow-hidden rounded-xl border border-warm-700/20 bg-gradient-to-r from-warm-950/80 via-surface-card to-surface-card p-6">
         <div className="relative z-10 flex items-start gap-4">
           <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-warm-600/15 text-warm-400">
@@ -79,7 +76,6 @@ export default async function DashboardPage() {
         </div>
         <div className="absolute -right-8 -top-8 h-32 w-32 rounded-full bg-warm-500/5 blur-2xl" />
       </div>
-
       <Section title="Tus Granjas">
         {farms.count === 0 ? (
           <EmptyState

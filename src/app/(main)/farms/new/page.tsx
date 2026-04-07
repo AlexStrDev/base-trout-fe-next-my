@@ -16,13 +16,11 @@ export default function NewFarmPage() {
           { label: 'Nueva Granja' },
         ]}
       />
-
       <div className="mx-auto max-w-lg">
         <PageHeader
           title="Nueva Granja"
           description="Registra una nueva granja acuícola"
         />
-
         <div className="mt-6 rounded-xl border border-border bg-surface-card p-6 animate-slide-up">
           <CreateFarmForm />
         </div>

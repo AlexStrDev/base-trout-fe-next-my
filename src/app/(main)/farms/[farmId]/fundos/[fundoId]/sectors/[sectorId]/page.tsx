@@ -58,7 +58,6 @@ export default async function SectorDetailPage({ params, searchParams }: Props) 
           { label: sector.name },
         ]}
       />
-
       <PageHeader
         title={sector.name}
         description={`${LOTE_LABELS[sector.type_lote] || sector.type_lote} · ${sector.area} m²`}
@@ -68,7 +67,6 @@ export default async function SectorDetailPage({ params, searchParams }: Props) 
           </ModalTrigger>
         }
       />
-
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-3 stagger-children">
         <StatCard
           label="Cohortes"
@@ -89,7 +87,6 @@ export default async function SectorDetailPage({ params, searchParams }: Props) 
           variant={sector.status === 'activo' ? 'lake' : 'default'}
         />
       </div>
-
       <Section title="Cohortes">
         <EntityList
           data={cohorts}

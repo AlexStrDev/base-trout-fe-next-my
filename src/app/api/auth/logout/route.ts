@@ -8,8 +8,6 @@ export async function GET(request: NextRequest) {
 
   session.destroy();
 
-  // Redirigir a logout de Keycloak para cerrar la sesión SSO.
-  // Usamos client_id en lugar de id_token_hint para evitar almacenar el id_token en la cookie.
   const keycloakBase = `${process.env.KEYCLOAK_URL}/realms/${process.env.KEYCLOAK_REALM}`;
   const logoutUrl = new URL(`${keycloakBase}/protocol/openid-connect/logout`);
   logoutUrl.searchParams.set('client_id', process.env.KEYCLOAK_CLIENT_ID!);

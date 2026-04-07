@@ -17,13 +17,11 @@ export function CreateSamplingForm({ cohortId }: Props) {
   return (
     <form ref={formRef} action={formAction} className="space-y-5">
       <input type="hidden" name="cohort_id" value={cohortId} />
-
       <FormAlert
         error={state.error}
         success={state.success}
         successMessage="Medición registrada correctamente"
       />
-
       <div className="grid grid-cols-2 gap-4">
         <InputField
           name="temperature_c"
@@ -47,7 +45,6 @@ export function CreateSamplingForm({ cohortId }: Props) {
           required
         />
       </div>
-
       <InputField
         name="num_sampled"
         label="Truchas muestreadas"
@@ -57,21 +54,18 @@ export function CreateSamplingForm({ cohortId }: Props) {
         error={state.fieldErrors?.num_sampled}
         required
       />
-
       <WeightRangeFields
         minName="weight_min_g"
         maxName="weight_max_g"
         minError={state.fieldErrors?.weight_min_g}
         maxError={state.fieldErrors?.weight_max_g}
       />
-
       <TextareaField
         name="details"
         label="Observaciones (opcional)"
         placeholder="Ej: Se observaron truchas con buen color y actividad normal"
         error={state.fieldErrors?.details}
       />
-
       <div className="flex justify-end gap-3 pt-2">
         <SubmitButton pendingText="Registrando...">Registrar Medición</SubmitButton>
       </div>
