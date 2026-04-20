@@ -78,6 +78,7 @@ export default async function FarmDetailPage({ params, searchParams }: Props) {
           variant="default"
         />
       </div>
+      {/* TODO: agregar una paginacion de fundos */}
       <Section title="Fundos">
         <EntityList
           data={fundos}

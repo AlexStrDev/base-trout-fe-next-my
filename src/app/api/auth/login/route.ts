@@ -22,6 +22,14 @@ export async function GET() {
   authUrl.searchParams.set('code_challenge', codeChallenge);
   authUrl.searchParams.set('code_challenge_method', 'S256');
 
+  console.log('[AUTH] ── PASO 1 ── Browser inicia login');
+  console.log('[AUTH]    Keycloak URL:', process.env.KEYCLOAK_URL);
+  console.log('[AUTH]    Realm:       ', process.env.KEYCLOAK_REALM);
+  console.log('[AUTH]    Client ID:   ', process.env.KEYCLOAK_CLIENT_ID);
+  console.log('[AUTH]    Redirect URI:', `${process.env.NEXTAUTH_URL}/api/auth/callback`);
+  console.log('[AUTH]    state:       ', state);
+  console.log('[AUTH] → Redirigiendo browser a Keycloak (el usuario verá el form de login)');
+
   const response = NextResponse.redirect(authUrl.toString());
 
   // Guardar verifier y state en cookie HTTP-only temporal (5 min)

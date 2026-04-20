@@ -76,6 +76,7 @@ export default async function DashboardPage() {
         </div>
         <div className="absolute -right-8 -top-8 h-32 w-32 rounded-full bg-warm-500/5 blur-2xl" />
       </div>
+      {/* TODO: agregar una paginacion de granjas */}
       <Section title="Tus Granjas">
         {farms.count === 0 ? (
           <EmptyState

@@ -95,7 +95,7 @@ export default async function FundoDetailPage({ params, searchParams }: Props) {
               title={sector.name}
               subtitle={`${LOTE_LABELS[sector.type_lote] || sector.type_lote} · ${sector.area} m²`}
               badge={<StatusBadge status={sector.status} />}
-              stats={[{ label: 'Cohortes', value: sector.cohort_count }]}
+              stats={[{ label: 'Cohorte', value: sector.cohort_id ? 'Registrada' : 'Sin cohorte' }]}
               meta={
                 <div className="flex items-center gap-1 text-xs text-text-muted">
                   <Maximize2 className="h-3 w-3" />

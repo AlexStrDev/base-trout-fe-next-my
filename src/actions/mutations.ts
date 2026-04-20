@@ -90,12 +90,14 @@ export async function createSectorAction(
   const fundoId = formData.get('fundo_id')?.toString();
   const farmId = formData.get('farm_id')?.toString();
   const name = formData.get('name')?.toString().trim();
+  const typeCultivation = formData.get('type_cultivation')?.toString();
   const typeLote = formData.get('type_lote')?.toString();
   const area = parseNumber(formData.get('area'));
 
   const fieldErrors: Record<string, string> = {};
   if (!name) fieldErrors.name = 'El nombre es requerido';
-  if (!typeLote) fieldErrors.type_lote = 'El tipo es requerido';
+  if (!typeCultivation) fieldErrors.type_cultivation = 'El tipo de cultivo es requerido';
+  if (!typeLote) fieldErrors.type_lote = 'El tipo de lote es requerido';
   if (area <= 0) fieldErrors.area = 'El área debe ser mayor a 0';
   if (Object.keys(fieldErrors).length > 0) {
     return { success: false, fieldErrors };
@@ -105,7 +107,7 @@ export async function createSectorAction(
     const result = await createSector({
       fundo_id: fundoId!,
       name: name!,
-      type_cultivation: 'trout',
+      type_cultivation: typeCultivation!,
       type_lote: typeLote!,
       area,
     });
@@ -151,11 +153,9 @@ export async function createCohortAction(
       initial_weight_max_g: weightMax,
       current_stage: stage || undefined,
     });
-    revalidateTag(`cohorts-${sectorId}`);
+    revalidateTag(`cohort-sector-${sectorId}`);
     revalidateTag(`sector-${sectorId}`);
-    redirect(
-      `/farms/${farmId}/fundos/${fundoId}/sectors/${sectorId}/cohorts/${result.cohort_id}`,
-    );
+    redirect(`/farms/${farmId}/fundos/${fundoId}/sectors/${sectorId}`);
   } catch (err: any) {
     if (isNextRedirect(err)) throw err;
     return { success: false, error: err.message || 'Error al crear la cohorte' };

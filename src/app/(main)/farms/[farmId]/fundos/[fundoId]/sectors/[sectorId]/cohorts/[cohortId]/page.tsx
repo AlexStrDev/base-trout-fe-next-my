@@ -13,7 +13,6 @@ import { PageHeader } from '@/components/ui/page-header';
 import { StatCard } from '@/components/ui/stat-card';
 import { StatusBadge, StageBadge } from '@/components/ui/badge';
 import { EmptyState } from '@/components/ui/empty-state';
-import { ModalTrigger } from '@/components/ui/modal-trigger';
 import { CreateSamplingForm } from '@/components/forms/create-sampling-form';
 import { WeightChart } from '@/components/ui/weight-chart';
 import { Pagination } from '@/components/ui/pagination';
@@ -78,11 +77,7 @@ export default async function CohortDetailPage({ params, searchParams }: Props) 
           { label: 'Granjas', href: '/' },
           { label: farm.name, href: `/farms/${farmId}` },
           { label: fundo.name, href: `/farms/${farmId}/fundos/${fundoId}` },
-          {
-            label: sector.name,
-            href: `/farms/${farmId}/fundos/${fundoId}/sectors/${sectorId}`,
-          },
-          { label: `Cohorte ${formatDate(cohort.start_date)}` },
+          { label: sector.name, href: `/farms/${farmId}/fundos/${fundoId}/sectors/${sectorId}` },
         ]}
       />
 

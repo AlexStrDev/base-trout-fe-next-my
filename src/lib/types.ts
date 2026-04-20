@@ -53,8 +53,8 @@ export interface CreateFundoPayload {
 }
 
 // ── Sector ─────────────────────────────────────────────────────────
-export type TypeCultivation = 'trout';
-export type TypeLote = 'cage' | 'pool';
+export type TypeCultivation = 'ciclo_completo' | 'por_etapa';
+export type TypeLote = 'jaula' | 'poza';
 export type SectorStatus = 'activo' | 'inactivo';
 
 export interface SectorItem {
@@ -64,7 +64,7 @@ export interface SectorItem {
   type_lote: string;
   area: number;
   status: string;
-  cohort_count: number;
+  cohort_id: string | null;
 }
 
 export interface SectorSummary {
@@ -76,7 +76,7 @@ export interface SectorSummary {
   status: string;
   created_at: string;
   updated_at: string;
-  cohort_count: number;
+  cohort_id: string | null;
 }
 
 export interface CreateSectorPayload {
@@ -169,7 +169,12 @@ export const STATUS_LABELS: Record<string, string> = {
   inactivo: 'Inactivo',
 };
 
+export const CULTIVATION_LABELS: Record<string, string> = {
+  ciclo_completo: 'Ciclo completo',
+  por_etapa: 'Por etapa',
+};
+
 export const LOTE_LABELS: Record<string, string> = {
-  cage: 'Jaula',
-  pool: 'Poza',
+  jaula: 'Jaula',
+  poza: 'Poza',
 };

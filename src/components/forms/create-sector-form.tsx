@@ -26,12 +26,23 @@ export function CreateSectorForm({ farmId, fundoId }: Props) {
         required
       />
       <SelectField
+        name="type_cultivation"
+        label="Tipo de cultivo"
+        placeholder="Seleccionar tipo"
+        options={[
+          { value: 'ciclo_completo', label: 'Ciclo completo' },
+          { value: 'por_etapa', label: 'Por etapa' },
+        ]}
+        error={state.fieldErrors?.type_cultivation}
+        required
+      />
+      <SelectField
         name="type_lote"
         label="Tipo de infraestructura"
         placeholder="Seleccionar tipo"
         options={[
-          { value: 'cage', label: 'Jaula' },
-          { value: 'pool', label: 'Poza' },
+          { value: 'jaula', label: 'Jaula' },
+          { value: 'poza', label: 'Poza' },
         ]}
         error={state.fieldErrors?.type_lote}
         required
