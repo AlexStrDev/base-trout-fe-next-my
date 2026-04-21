@@ -9,6 +9,7 @@ import type {
   CohortItem,
   CohortSummary,
   SamplingItem,
+  WeightPredictionPoint,
 } from './types';
 import { getAccessToken } from './session';
 
@@ -228,6 +229,15 @@ export async function getSamplings(
       page_size: String(pageSize),
     },
     next: { tags: [`samplings-${cohortId}`] },
+  });
+}
+
+export async function getWeightPredictions(
+  cohortId: string,
+): Promise<WeightPredictionPoint[]> {
+  return fetcher('/trout/weight-predictions', {
+    params: { cohort_id: cohortId },
+    next: { tags: [`weight-predictions-${cohortId}`] },
   });
 }
 

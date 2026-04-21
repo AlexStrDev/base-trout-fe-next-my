@@ -5,6 +5,7 @@ import {
   getSectorSummary,
   getCohortBySector,
   getSamplings,
+  getWeightPredictions,
 } from '@/lib/api';
 import { formatDate, formatDateTime, formatNumber, formatWeight } from '@/lib/utils';
 import { LOTE_LABELS, CULTIVATION_LABELS } from '@/lib/types';
@@ -75,6 +76,12 @@ export default async function SectorDetailPage({ params, searchParams }: Props) 
   }
 
   const samplings = cohort ? await getSamplings(cohort.cohort_id, page, 20) : null;
+  const predictions = cohort
+    ? await getWeightPredictions(cohort.cohort_id).catch((err) => {
+        console.error('[PREDICTIONS] Error:', err?.status, err?.message);
+        return [];
+      })
+    : [];
 
   const survivalRate =
     cohort && cohort.initial_num > 0
@@ -204,7 +211,7 @@ export default async function SectorDetailPage({ params, searchParams }: Props) 
 
           {/* Gráfico */}
           {samplings && samplings.results.length > 0 && (
-            <WeightChart samplings={samplings.results} />
+            <WeightChart samplings={samplings.results} predictions={predictions} />
           )}
 
           {/* Formulario de muestreo + historial */}

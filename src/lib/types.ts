@@ -153,6 +153,14 @@ export interface CreateSamplingPayload {
   details?: string;
 }
 
+// ── Weight Prediction (Kafka) ──────────────────────────────────────
+export interface WeightPredictionPoint {
+  predicted_date: string;
+  predicted_weight_avg_g: number;
+  predicted_weight_min_g: number;
+  predicted_weight_max_g: number;
+}
+
 // ── Enums labels (para UI) ─────────────────────────────────────────
 export const STAGE_LABELS: Record<string, string> = {
   eggs: 'Huevos',

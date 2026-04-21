@@ -5,6 +5,7 @@ import {
   getSectorSummary,
   getCohortSummary,
   getSamplings,
+  getWeightPredictions,
 } from '@/lib/api';
 import { formatDate, formatDateTime, formatNumber, formatWeight } from '@/lib/utils';
 import { STAGE_LABELS } from '@/lib/types';
@@ -65,6 +66,10 @@ export default async function CohortDetailPage({ params, searchParams }: Props) 
   }
 
   const samplings = await getSamplings(cohortId, page, 20);
+  const predictions = await getWeightPredictions(cohortId).catch((err) => {
+    console.error('[PREDICTIONS] Error al obtener predicciones:', err?.status, err?.message);
+    return [];
+  });
   const survivalRate =
     cohort.initial_num > 0
       ? ((cohort.alive / cohort.initial_num) * 100).toFixed(1)
@@ -142,7 +147,7 @@ export default async function CohortDetailPage({ params, searchParams }: Props) 
         </div>
       )}
       {samplings.results.length > 0 && (
-        <WeightChart samplings={samplings.results} />
+        <WeightChart samplings={samplings.results} predictions={predictions} />
       )}
       <div className="grid grid-cols-1 gap-8 lg:grid-cols-5">
         <div className="lg:col-span-2">
