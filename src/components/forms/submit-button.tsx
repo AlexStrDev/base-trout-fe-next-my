@@ -8,12 +8,14 @@ interface SubmitButtonProps {
   children: ReactNode;
   pendingText?: string;
   className?: string;
+  variant?: 'primary' | 'danger';
 }
 
 export function SubmitButton({
   children,
   pendingText = 'Guardando...',
   className,
+  variant = 'primary',
 }: SubmitButtonProps) {
   const { pending } = useFormStatus();
 
@@ -23,10 +25,20 @@ export function SubmitButton({
       disabled={pending}
       className={cn(
         'relative w-full overflow-hidden rounded-xl px-5 py-3 text-sm font-semibold',
-        'bg-lake-600 text-white',
-        'shadow-[0_1px_2px_rgba(0,0,0,0.3),0_2px_8px_rgba(29,116,82,0.25)]',
-        'hover:bg-lake-500 hover:shadow-[0_2px_12px_rgba(29,116,82,0.35)]',
-        'active:scale-[0.98] active:bg-lake-700',
+        'text-white',
+        variant === 'danger'
+          ? [
+              'bg-danger-600',
+              'shadow-[0_1px_2px_rgba(0,0,0,0.3),0_2px_8px_rgba(220,38,38,0.25)]',
+              'hover:bg-danger-500 hover:shadow-[0_2px_12px_rgba(220,38,38,0.35)]',
+              'active:scale-[0.98] active:bg-danger-700',
+            ].join(' ')
+          : [
+              'bg-lake-600',
+              'shadow-[0_1px_2px_rgba(0,0,0,0.3),0_2px_8px_rgba(29,116,82,0.25)]',
+              'hover:bg-lake-500 hover:shadow-[0_2px_12px_rgba(29,116,82,0.35)]',
+              'active:scale-[0.98] active:bg-lake-700',
+            ].join(' '),
         'transition-all duration-200 ease-out',
         'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-lake-500/50 focus-visible:ring-offset-2 focus-visible:ring-offset-surface-card',
         'disabled:pointer-events-none disabled:opacity-55',
@@ -36,7 +48,10 @@ export function SubmitButton({
       {/* Progress bar while pending */}
       {pending && (
         <span
-          className="absolute inset-x-0 bottom-0 h-0.5 bg-lake-300/60 animate-[progress-fill_2.5s_ease-out_both]"
+          className={cn(
+            'absolute inset-x-0 bottom-0 h-0.5 animate-[progress-fill_2.5s_ease-out_both]',
+            variant === 'danger' ? 'bg-danger-300/60' : 'bg-lake-300/60',
+          )}
           aria-hidden
         />
       )}

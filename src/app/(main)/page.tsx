@@ -6,6 +6,11 @@ import { DataCard } from '@/components/ui/data-card';
 import { Button } from '@/components/ui/button';
 import { EmptyState } from '@/components/ui/empty-state';
 import { Section } from '@/components/ui/section';
+import { EditTrigger } from '@/components/ui/edit-trigger';
+import { DeleteTrigger } from '@/components/ui/delete-trigger';
+import { EditFarmForm } from '@/components/forms/edit-farm-form';
+import { DeleteConfirmForm } from '@/components/forms/delete-confirm-form';
+import { deleteFarmAction } from '@/actions/mutations';
 import { Warehouse, MapPin, Fish, Plus, Layers, BarChart3, Thermometer } from 'lucide-react';
 import type { Metadata } from 'next';
 
@@ -93,21 +98,38 @@ export default async function DashboardPage() {
         ) : (
           <div className="space-y-3 stagger-children">
             {farms.results.map((farm) => (
-              <DataCard
-                key={farm.id}
-                href={`/farms/${farm.id}`}
-                title={farm.name}
-                subtitle={farm.location}
-                badge={
-                  <span className="inline-flex items-center gap-1 text-xs text-text-muted">
-                    <MapPin className="h-3 w-3" />
-                  </span>
-                }
-                stats={[
-                  { label: 'Fundos', value: farm.fundo_count },
-                  { label: 'Sectores', value: farm.sector_count },
-                ]}
-              />
+              <div key={farm.id} className="group/row relative flex items-center gap-2">
+                <div className="min-w-0 flex-1">
+                  <DataCard
+                    href={`/farms/${farm.id}`}
+                    title={farm.name}
+                    subtitle={farm.location}
+                    badge={
+                      <span className="inline-flex items-center gap-1 text-xs text-text-muted">
+                        <MapPin className="h-3 w-3" />
+                      </span>
+                    }
+                    stats={[
+                      { label: 'Fundos', value: farm.fundo_count },
+                      { label: 'Sectores', value: farm.sector_count },
+                    ]}
+                  />
+                </div>
+                <div className="flex shrink-0 items-center gap-1 opacity-0 transition-opacity duration-150 group-hover/row:opacity-100">
+                  <EditTrigger title="Editar Granja">
+                    <EditFarmForm farm={farm} />
+                  </EditTrigger>
+                  <DeleteTrigger title="Eliminar Granja">
+                    <DeleteConfirmForm
+                      action={deleteFarmAction}
+                      entityName={farm.name}
+                      entityLabel="la granja"
+                      hiddenFields={{ farm_id: farm.id }}
+                      warningMessage="Se eliminarán también todos los fundos y sectores asociados."
+                    />
+                  </DeleteTrigger>
+                </div>
+              </div>
             ))}
           </div>
         )}

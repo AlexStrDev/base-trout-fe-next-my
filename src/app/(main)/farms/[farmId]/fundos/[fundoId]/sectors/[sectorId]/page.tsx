@@ -16,7 +16,12 @@ import { StatusBadge, StageBadge } from '@/components/ui/badge';
 import { EmptyState } from '@/components/ui/empty-state';
 import { Section } from '@/components/ui/section';
 import { ModalTrigger } from '@/components/ui/modal-trigger';
+import { EditTrigger } from '@/components/ui/edit-trigger';
+import { DeleteTrigger } from '@/components/ui/delete-trigger';
 import { CreateCohortForm } from '@/components/forms/create-cohort-form';
+import { EditCohortForm } from '@/components/forms/edit-cohort-form';
+import { DeleteConfirmForm } from '@/components/forms/delete-confirm-form';
+import { deleteCohortAction } from '@/actions/mutations';
 import { WeightChart } from '@/components/ui/weight-chart';
 import { CohortStats } from '@/components/ui/cohort-stats';
 import { LastSamplingStats } from '@/components/ui/last-sampling-stats';
@@ -137,7 +142,25 @@ export default async function SectorDetailPage({ params, searchParams }: Props) 
 
       {cohort && samplings && (
         <>
-          <Section title={`Cohorte — iniciada el ${formatDate(cohort.start_date)}`}>
+          <Section
+            title={`Cohorte — iniciada el ${formatDate(cohort.start_date)}`}
+            action={
+              <div className="flex items-center gap-1">
+                <EditTrigger title="Editar Cohorte">
+                  <EditCohortForm cohort={cohort} sectorId={sectorId} />
+                </EditTrigger>
+                <DeleteTrigger title="Eliminar Cohorte">
+                  <DeleteConfirmForm
+                    action={deleteCohortAction}
+                    entityName={`Cohorte del ${formatDate(cohort.start_date)}`}
+                    entityLabel="la cohorte"
+                    hiddenFields={{ cohort_id: cohort.cohort_id, sector_id: sectorId }}
+                    warningMessage="Se eliminarán también todos los muestreos registrados."
+                  />
+                </DeleteTrigger>
+              </div>
+            }
+          >
             <CohortStats cohort={cohort} />
           </Section>
 

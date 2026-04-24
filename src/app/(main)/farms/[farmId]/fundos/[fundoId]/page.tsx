@@ -11,7 +11,12 @@ import { EntityList } from '@/components/ui/entity-list';
 import { Section } from '@/components/ui/section';
 import { StatusBadge } from '@/components/ui/badge';
 import { ModalTrigger } from '@/components/ui/modal-trigger';
+import { EditTrigger } from '@/components/ui/edit-trigger';
+import { DeleteTrigger } from '@/components/ui/delete-trigger';
 import { CreateSectorForm } from '@/components/forms/create-sector-form';
+import { EditSectorForm } from '@/components/forms/edit-sector-form';
+import { DeleteConfirmForm } from '@/components/forms/delete-confirm-form';
+import { deleteSectorAction } from '@/actions/mutations';
 import { Fish, Calendar, Maximize2 } from 'lucide-react';
 import type { Metadata } from 'next';
 
@@ -89,20 +94,37 @@ export default async function FundoDetailPage({ params, searchParams }: Props) {
             />
           }
           renderItem={(sector) => (
-            <DataCard
-              key={sector.id}
-              href={`/farms/${farmId}/fundos/${fundoId}/sectors/${sector.id}`}
-              title={sector.name}
-              subtitle={`${LOTE_LABELS[sector.type_lote] || sector.type_lote} · ${sector.area} m²`}
-              badge={<StatusBadge status={sector.status} />}
-              stats={[{ label: 'Cohorte', value: sector.cohort_id ? 'Registrada' : 'Sin cohorte' }]}
-              meta={
-                <div className="flex items-center gap-1 text-xs text-text-muted">
-                  <Maximize2 className="h-3 w-3" />
-                  {sector.area} m²
-                </div>
-              }
-            />
+            <div key={sector.id} className="group/row relative flex items-center gap-2">
+              <div className="min-w-0 flex-1">
+                <DataCard
+                  href={`/farms/${farmId}/fundos/${fundoId}/sectors/${sector.id}`}
+                  title={sector.name}
+                  subtitle={`${LOTE_LABELS[sector.type_lote] || sector.type_lote} · ${sector.area} m²`}
+                  badge={<StatusBadge status={sector.status} />}
+                  stats={[{ label: 'Cohorte', value: sector.cohort_id ? 'Registrada' : 'Sin cohorte' }]}
+                  meta={
+                    <div className="flex items-center gap-1 text-xs text-text-muted">
+                      <Maximize2 className="h-3 w-3" />
+                      {sector.area} m²
+                    </div>
+                  }
+                />
+              </div>
+              <div className="flex shrink-0 items-center gap-1 opacity-0 transition-opacity duration-150 group-hover/row:opacity-100">
+                <EditTrigger title="Editar Sector">
+                  <EditSectorForm sector={sector} fundoId={fundoId} farmId={farmId} />
+                </EditTrigger>
+                <DeleteTrigger title="Eliminar Sector">
+                  <DeleteConfirmForm
+                    action={deleteSectorAction}
+                    entityName={sector.name}
+                    entityLabel="el sector"
+                    hiddenFields={{ sector_id: sector.id, fundo_id: fundoId, farm_id: farmId }}
+                    warningMessage={sector.cohort_id ? 'Este sector tiene una cohorte activa y no puede eliminarse.' : 'Se eliminará permanentemente.'}
+                  />
+                </DeleteTrigger>
+              </div>
+            </div>
           )}
         />
       </Section>

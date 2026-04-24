@@ -1,14 +1,22 @@
+'use client';
+
 import { formatDateTime, formatWeight } from '@/lib/utils';
 import { Pagination } from '@/components/ui/pagination';
 import { EmptyState } from '@/components/ui/empty-state';
+import { EditTrigger } from '@/components/ui/edit-trigger';
+import { DeleteTrigger } from '@/components/ui/delete-trigger';
+import { EditSamplingForm } from '@/components/forms/edit-sampling-form';
+import { DeleteConfirmForm } from '@/components/forms/delete-confirm-form';
+import { deleteSamplingAction } from '@/actions/mutations';
 import { ClipboardList, Thermometer } from 'lucide-react';
 import type { PaginatedResult, SamplingItem } from '@/lib/types';
 
 interface Props {
   samplings: PaginatedResult<SamplingItem>;
+  cohortId?: string;
 }
 
-export function SamplingTable({ samplings }: Props) {
+export function SamplingTable({ samplings, cohortId }: Props) {
   if (samplings.count === 0) {
     return (
       <EmptyState
@@ -43,13 +51,18 @@ export function SamplingTable({ samplings }: Props) {
               <th className="hidden sm:table-cell px-4 py-3 text-left text-[10px] font-semibold uppercase tracking-widest text-text-muted">
                 Notas
               </th>
+              {cohortId && (
+                <th className="px-3 py-3 text-right text-[10px] font-semibold uppercase tracking-widest text-text-muted">
+                  Acciones
+                </th>
+              )}
             </tr>
           </thead>
           <tbody className="divide-y divide-border/50">
             {samplings.results.map((s, i) => (
               <tr
                 key={s.id}
-                className="group transition-colors duration-150 hover:bg-surface-overlay/40"
+                className="group/row transition-colors duration-150 hover:bg-surface-overlay/40"
                 style={{ animationDelay: `${i * 30}ms` }}
               >
                 <td className="whitespace-nowrap px-4 py-3 text-xs text-text-muted">
@@ -89,6 +102,23 @@ export function SamplingTable({ samplings }: Props) {
                     <span className="opacity-30">—</span>
                   )}
                 </td>
+                {cohortId && (
+                  <td className="px-3 py-2">
+                    <div className="flex items-center justify-end gap-0.5 opacity-0 transition-opacity duration-150 group-hover/row:opacity-100">
+                      <EditTrigger title="Editar Medición">
+                        <EditSamplingForm sampling={s} cohortId={cohortId} />
+                      </EditTrigger>
+                      <DeleteTrigger title="Eliminar Medición">
+                        <DeleteConfirmForm
+                          action={deleteSamplingAction}
+                          entityName={formatDateTime(s.timestamps)}
+                          entityLabel="la medición del"
+                          hiddenFields={{ sampling_id: s.id, cohort_id: cohortId }}
+                        />
+                      </DeleteTrigger>
+                    </div>
+                  </td>
+                )}
               </tr>
             ))}
           </tbody>

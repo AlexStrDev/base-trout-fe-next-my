@@ -458,6 +458,8 @@ interface WeightRangeFieldsProps {
   maxPlaceholder?: string;
   minError?: string;
   maxError?: string;
+  minDefaultValue?: string;
+  maxDefaultValue?: string;
 }
 
 export function WeightRangeFields({
@@ -469,6 +471,8 @@ export function WeightRangeFields({
   maxPlaceholder = 'Ej: 110.0',
   minError,
   maxError,
+  minDefaultValue,
+  maxDefaultValue,
 }: WeightRangeFieldsProps) {
   return (
     <div className="grid grid-cols-2 gap-3">
@@ -479,6 +483,7 @@ export function WeightRangeFields({
         step="0.01"
         min="0.01"
         placeholder={minPlaceholder}
+        defaultValue={minDefaultValue}
         error={minError}
         required
       />
@@ -489,6 +494,7 @@ export function WeightRangeFields({
         step="0.01"
         min="0.01"
         placeholder={maxPlaceholder}
+        defaultValue={maxDefaultValue}
         error={maxError}
         required
       />

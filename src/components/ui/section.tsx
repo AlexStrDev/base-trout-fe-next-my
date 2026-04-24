@@ -5,9 +5,10 @@ interface SectionProps {
   title: string;
   children: ReactNode;
   className?: string;
+  action?: ReactNode;
 }
 
-export function Section({ title, children, className }: SectionProps) {
+export function Section({ title, children, className, action }: SectionProps) {
   return (
     <section className={cn('space-y-4', className)}>
       <div className="flex items-center gap-3">
@@ -16,6 +17,7 @@ export function Section({ title, children, className }: SectionProps) {
         <h2 className="text-sm font-semibold uppercase tracking-widest text-text-muted">
           {title}
         </h2>
+        {action && <div className="ml-auto">{action}</div>}
       </div>
       {children}
     </section>

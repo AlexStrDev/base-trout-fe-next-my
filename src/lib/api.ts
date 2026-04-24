@@ -60,6 +60,20 @@ async function fetcher<T>(
 
 // ── Farm ───────────────────────────────────────────────────────────
 
+export async function updateFarm(
+  farmId: string,
+  data: { name?: string; location?: string },
+): Promise<FarmSummary> {
+  return fetcher(`/trout/farm?farm_id=${farmId}`, {
+    method: 'PATCH',
+    body: JSON.stringify(data),
+  });
+}
+
+export async function deleteFarm(farmId: string): Promise<{ message: string }> {
+  return fetcher(`/trout/farm?farm_id=${farmId}`, { method: 'DELETE' });
+}
+
 export async function getFarms(
   page = 1,
   pageSize = 10,
@@ -87,6 +101,20 @@ export async function createFarm(
 }
 
 // ── Fundo ──────────────────────────────────────────────────────────
+
+export async function updateFundo(
+  fundoId: string,
+  data: { name?: string },
+): Promise<FundoSummary> {
+  return fetcher(`/trout/fundo?fundo_id=${fundoId}`, {
+    method: 'PATCH',
+    body: JSON.stringify(data),
+  });
+}
+
+export async function deleteFundo(fundoId: string): Promise<{ message: string }> {
+  return fetcher(`/trout/fundo?fundo_id=${fundoId}`, { method: 'DELETE' });
+}
 
 export async function getFundos(
   farmId: string,
@@ -123,6 +151,20 @@ export async function createFundo(
 }
 
 // ── Sector ─────────────────────────────────────────────────────────
+
+export async function updateSector(
+  sectorId: string,
+  data: { name?: string; type_cultivation?: string; type_lote?: string; area?: number; status?: string },
+): Promise<SectorSummary> {
+  return fetcher(`/trout/sector?sector_id=${sectorId}`, {
+    method: 'PATCH',
+    body: JSON.stringify(data),
+  });
+}
+
+export async function deleteSector(sectorId: string): Promise<{ message: string }> {
+  return fetcher(`/trout/sector?sector_id=${sectorId}`, { method: 'DELETE' });
+}
 
 export async function getSectors(
   farmId: string,
@@ -164,6 +206,27 @@ export async function createSector(
 }
 
 // ── Cohort ─────────────────────────────────────────────────────────
+
+export async function updateCohort(
+  cohortId: string,
+  data: {
+    start_date?: string;
+    initial_num?: number;
+    initial_weight_min_g?: number;
+    initial_weight_max_g?: number;
+    current_stage?: string;
+    status?: string;
+  },
+): Promise<CohortSummary> {
+  return fetcher(`/trout/cohort?cohort_id=${cohortId}`, {
+    method: 'PATCH',
+    body: JSON.stringify(data),
+  });
+}
+
+export async function deleteCohort(cohortId: string): Promise<{ message: string }> {
+  return fetcher(`/trout/cohort?cohort_id=${cohortId}`, { method: 'DELETE' });
+}
 
 export async function getCohorts(
   sectorId: string,
@@ -211,6 +274,27 @@ export async function createCohort(
 }
 
 // ── Sampling ───────────────────────────────────────────────────────
+
+export async function updateSampling(
+  samplingId: string,
+  data: {
+    temperature_c?: number;
+    dead_trout?: number;
+    num_sampled?: number;
+    weight_min_g?: number;
+    weight_max_g?: number;
+    details?: string;
+  },
+): Promise<SamplingItem> {
+  return fetcher(`/trout/sampling?sampling_id=${samplingId}`, {
+    method: 'PATCH',
+    body: JSON.stringify(data),
+  });
+}
+
+export async function deleteSampling(samplingId: string): Promise<{ message: string }> {
+  return fetcher(`/trout/sampling?sampling_id=${samplingId}`, { method: 'DELETE' });
+}
 
 export async function getSamplings(
   cohortId: string,

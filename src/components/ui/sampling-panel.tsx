@@ -44,7 +44,7 @@ export function SamplingPanel({ cohortId, samplings }: Props) {
             </span>
           )}
         </div>
-        <SamplingTable samplings={samplings} />
+        <SamplingTable samplings={samplings} cohortId={cohortId} />
       </div>
     </div>
   );

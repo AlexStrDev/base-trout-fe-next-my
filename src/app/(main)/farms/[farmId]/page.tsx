@@ -9,7 +9,12 @@ import { EmptyState } from '@/components/ui/empty-state';
 import { EntityList } from '@/components/ui/entity-list';
 import { Section } from '@/components/ui/section';
 import { ModalTrigger } from '@/components/ui/modal-trigger';
+import { EditTrigger } from '@/components/ui/edit-trigger';
+import { DeleteTrigger } from '@/components/ui/delete-trigger';
 import { CreateFundoForm } from '@/components/forms/create-fundo-form';
+import { EditFundoForm } from '@/components/forms/edit-fundo-form';
+import { DeleteConfirmForm } from '@/components/forms/delete-confirm-form';
+import { deleteFundoAction } from '@/actions/mutations';
 import { Layers, Fish, Calendar } from 'lucide-react';
 import type { Metadata } from 'next';
 
@@ -90,12 +95,29 @@ export default async function FarmDetailPage({ params, searchParams }: Props) {
             />
           }
           renderItem={(fundo) => (
-            <DataCard
-              key={fundo.id}
-              href={`/farms/${farmId}/fundos/${fundo.id}`}
-              title={fundo.name}
-              stats={[{ label: 'Sectores', value: fundo.sector_count }]}
-            />
+            <div key={fundo.id} className="group/row relative flex items-center gap-2">
+              <div className="min-w-0 flex-1">
+                <DataCard
+                  href={`/farms/${farmId}/fundos/${fundo.id}`}
+                  title={fundo.name}
+                  stats={[{ label: 'Sectores', value: fundo.sector_count }]}
+                />
+              </div>
+              <div className="flex shrink-0 items-center gap-1 opacity-0 transition-opacity duration-150 group-hover/row:opacity-100">
+                <EditTrigger title="Editar Fundo">
+                  <EditFundoForm fundo={fundo} farmId={farmId} />
+                </EditTrigger>
+                <DeleteTrigger title="Eliminar Fundo">
+                  <DeleteConfirmForm
+                    action={deleteFundoAction}
+                    entityName={fundo.name}
+                    entityLabel="el fundo"
+                    hiddenFields={{ fundo_id: fundo.id, farm_id: farmId }}
+                    warningMessage="Se eliminarán también todos los sectores y cohortes asociados."
+                  />
+                </DeleteTrigger>
+              </div>
+            </div>
           )}
         />
       </Section>
