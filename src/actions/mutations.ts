@@ -18,9 +18,10 @@ export type ActionState = {
   fieldErrors?: Record<string, string>;
 };
 
+/** Parsea un campo numérico del FormData. Retorna NaN si el valor no es convertible. */
 function parseNumber(val: FormDataEntryValue | null): number {
+  if (val === null || val === '') return NaN;
   const n = Number(val);
-  if (isNaN(n)) return 0;
   return n;
 }
 
@@ -74,6 +75,7 @@ export async function createFundoAction(
     const result = await createFundo({ farm_id: farmId!, name: name! });
     revalidateTag(`fundos-${farmId}`);
     revalidateTag(`farm-${farmId}`);
+    revalidateTag('farms');
     redirect(`/farms/${farmId}/fundos/${result.fundo_id}`);
   } catch (err: any) {
     if (isNextRedirect(err)) throw err;
@@ -98,7 +100,8 @@ export async function createSectorAction(
   if (!name) fieldErrors.name = 'El nombre es requerido';
   if (!typeCultivation) fieldErrors.type_cultivation = 'El tipo de cultivo es requerido';
   if (!typeLote) fieldErrors.type_lote = 'El tipo de lote es requerido';
-  if (area <= 0) fieldErrors.area = 'El área debe ser mayor a 0';
+  if (isNaN(area)) fieldErrors.area = 'El área debe ser un número válido';
+  else if (area <= 0) fieldErrors.area = 'El área debe ser mayor a 0';
   if (Object.keys(fieldErrors).length > 0) {
     return { success: false, fieldErrors };
   }
@@ -113,6 +116,8 @@ export async function createSectorAction(
     });
     revalidateTag(`sectors-${fundoId}`);
     revalidateTag(`fundo-${fundoId}`);
+    revalidateTag(`farm-${farmId}`);
+    revalidateTag('farms');
     redirect(`/farms/${farmId}/fundos/${fundoId}/sectors/${result.sector_id}`);
   } catch (err: any) {
     if (isNextRedirect(err)) throw err;
@@ -137,9 +142,12 @@ export async function createCohortAction(
 
   const fieldErrors: Record<string, string> = {};
   if (!startDate) fieldErrors.start_date = 'La fecha es requerida';
-  if (initialNum <= 0) fieldErrors.initial_num = 'Debe ser mayor a 0';
-  if (weightMin <= 0) fieldErrors.initial_weight_min_g = 'Debe ser mayor a 0';
-  if (weightMax < weightMin) fieldErrors.initial_weight_max_g = 'Debe ser >= peso mín.';
+  if (isNaN(initialNum)) fieldErrors.initial_num = 'Debe ser un número válido';
+  else if (initialNum <= 0) fieldErrors.initial_num = 'Debe ser mayor a 0';
+  if (isNaN(weightMin)) fieldErrors.initial_weight_min_g = 'Debe ser un número válido';
+  else if (weightMin <= 0) fieldErrors.initial_weight_min_g = 'Debe ser mayor a 0';
+  if (isNaN(weightMax)) fieldErrors.initial_weight_max_g = 'Debe ser un número válido';
+  else if (weightMax < weightMin) fieldErrors.initial_weight_max_g = 'Debe ser >= peso mín.';
   if (Object.keys(fieldErrors).length > 0) {
     return { success: false, fieldErrors };
   }
@@ -177,12 +185,16 @@ export async function createSamplingAction(
   const details = formData.get('details')?.toString().trim();
 
   const fieldErrors: Record<string, string> = {};
-  if (temperatureC < 0 || temperatureC > 30)
-    fieldErrors.temperature_c = 'Debe estar entre 0 y 30 °C';
-  if (numSampled <= 0) fieldErrors.num_sampled = 'Debe ser mayor a 0';
-  if (weightMin <= 0) fieldErrors.weight_min_g = 'Debe ser mayor a 0';
-  if (weightMax < weightMin)
-    fieldErrors.weight_max_g = 'Debe ser >= peso mín.';
+  if (isNaN(temperatureC)) fieldErrors.temperature_c = 'Debe ser un número válido';
+  else if (temperatureC < 0 || temperatureC > 30) fieldErrors.temperature_c = 'Debe estar entre 0 y 30 °C';
+  if (isNaN(deadTrout)) fieldErrors.dead_trout = 'Debe ser un número válido';
+  else if (deadTrout < 0) fieldErrors.dead_trout = 'Debe ser 0 o mayor';
+  if (isNaN(numSampled)) fieldErrors.num_sampled = 'Debe ser un número válido';
+  else if (numSampled <= 0) fieldErrors.num_sampled = 'Debe ser mayor a 0';
+  if (isNaN(weightMin)) fieldErrors.weight_min_g = 'Debe ser un número válido';
+  else if (weightMin <= 0) fieldErrors.weight_min_g = 'Debe ser mayor a 0';
+  if (isNaN(weightMax)) fieldErrors.weight_max_g = 'Debe ser un número válido';
+  else if (weightMax < weightMin) fieldErrors.weight_max_g = 'Debe ser >= peso mín.';
   if (Object.keys(fieldErrors).length > 0) {
     return { success: false, fieldErrors };
   }

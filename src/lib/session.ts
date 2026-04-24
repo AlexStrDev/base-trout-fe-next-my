@@ -30,11 +30,8 @@ export async function getAccessToken(): Promise<string | null> {
   if (!session.refreshToken) return null;
 
   if (session.accessToken && session.accessTokenExpiresAt && Date.now() < session.accessTokenExpiresAt - 30_000) {
-    console.log('[AUTH]    getAccessToken → AT cacheado vigente (expira:', new Date(session.accessTokenExpiresAt).toISOString(), ')');
     return session.accessToken;
   }
-
-  console.log('[AUTH]    getAccessToken → AT vencido o ausente, haciendo refresh a Keycloak...');
 
   const keycloakBase = `${process.env.KEYCLOAK_URL}/realms/${process.env.KEYCLOAK_REALM}`;
   const res = await fetch(`${keycloakBase}/protocol/openid-connect/token`, {
@@ -47,12 +44,9 @@ export async function getAccessToken(): Promise<string | null> {
     }),
   });
 
-  if (!res.ok) {
-    console.log('[AUTH] ✗ getAccessToken → refresh falló. Status:', res.status);
-    return null;
-  }
+  if (!res.ok) return null;
+
   const tokens = await res.json();
-  console.log('[AUTH]    getAccessToken → nuevo AT obtenido ✓ (expira en', tokens.expires_in, 's)');
 
   session.accessToken = tokens.access_token;
   session.accessTokenExpiresAt = Date.now() + tokens.expires_in * 1000;

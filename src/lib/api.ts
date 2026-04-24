@@ -41,9 +41,6 @@ async function fetcher<T>(
   // Adjuntar Bearer token desde la sesión (sólo en server components / server actions)
   const token = await getAccessToken();
 
-  console.log(`[AUTH] ── Next.js → NestJS ── ${fetchOpts.method || 'GET'} ${url}`);
-  console.log('[AUTH]    Authorization: Bearer', token ? token.slice(0, 30) + '...' : '(sin token)');
-
   const res = await fetch(url, {
     ...fetchOpts,
     headers: {
@@ -52,8 +49,6 @@ async function fetcher<T>(
       ...fetchOpts.headers,
     },
   });
-
-  console.log('[AUTH]    NestJS respondió:', res.status, res.statusText);
 
   if (!res.ok) {
     const body = await res.json().catch(() => ({}));

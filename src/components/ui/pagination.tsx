@@ -31,25 +31,28 @@ export function Pagination({ page, numPages, count, className }: PaginationProps
   return (
     <div
       className={cn(
-        'flex items-center justify-between border-t border-border pt-4',
+        'flex items-center justify-between border-t border-border/60 pt-4',
         className,
       )}
     >
       <p className="text-xs text-text-muted">
-        {count} resultado{count !== 1 ? 's' : ''} · Página {page} de {numPages}
+        <span className="font-medium text-text-secondary">{count}</span>{' '}
+        resultado{count !== 1 ? 's' : ''} · pág. {page} de {numPages}
       </p>
-      <div className="flex items-center gap-1">
+
+      <div className="flex items-center gap-0.5">
         <button
           onClick={() => router.push(createPageURL(page - 1))}
           disabled={page <= 1}
           className={cn(
-            'flex h-8 w-8 items-center justify-center rounded-md transition-colors',
-            'hover:bg-surface-overlay text-text-muted hover:text-text-primary',
-            'disabled:pointer-events-none disabled:opacity-30',
+            'flex h-7 w-7 items-center justify-center rounded-lg transition-all duration-150',
+            'text-text-muted hover:bg-surface-overlay hover:text-text-primary',
+            'disabled:pointer-events-none disabled:opacity-25',
           )}
         >
-          <ChevronLeft className="h-4 w-4" />
+          <ChevronLeft className="h-3.5 w-3.5" />
         </button>
+
         {Array.from({ length: Math.min(numPages, 5) }, (_, i) => {
           let pageNum: number;
           if (numPages <= 5) {
@@ -61,14 +64,15 @@ export function Pagination({ page, numPages, count, className }: PaginationProps
           } else {
             pageNum = page - 2 + i;
           }
+          const isActive = pageNum === page;
           return (
             <button
               key={pageNum}
               onClick={() => router.push(createPageURL(pageNum))}
               className={cn(
-                'flex h-8 w-8 items-center justify-center rounded-md text-xs font-medium transition-colors',
-                pageNum === page
-                  ? 'bg-lake-600 text-white'
+                'flex h-7 w-7 items-center justify-center rounded-lg text-xs font-medium transition-all duration-150',
+                isActive
+                  ? 'bg-lake-600 text-white shadow-[0_1px_4px_rgba(29,116,82,0.4)]'
                   : 'text-text-muted hover:bg-surface-overlay hover:text-text-primary',
               )}
             >
@@ -76,16 +80,17 @@ export function Pagination({ page, numPages, count, className }: PaginationProps
             </button>
           );
         })}
+
         <button
           onClick={() => router.push(createPageURL(page + 1))}
           disabled={page >= numPages}
           className={cn(
-            'flex h-8 w-8 items-center justify-center rounded-md transition-colors',
-            'hover:bg-surface-overlay text-text-muted hover:text-text-primary',
-            'disabled:pointer-events-none disabled:opacity-30',
+            'flex h-7 w-7 items-center justify-center rounded-lg transition-all duration-150',
+            'text-text-muted hover:bg-surface-overlay hover:text-text-primary',
+            'disabled:pointer-events-none disabled:opacity-25',
           )}
         >
-          <ChevronRight className="h-4 w-4" />
+          <ChevronRight className="h-3.5 w-3.5" />
         </button>
       </div>
     </div>

@@ -13,7 +13,8 @@ export const metadata: Metadata = {
   title: 'Dashboard',
 };
 
-export const dynamic = 'force-dynamic';
+// La página se cachea y solo se revalida cuando createFarmAction llama revalidateTag('farms')
+export const dynamic = 'auto';
 
 export default async function DashboardPage() {
   const farms = await getFarms(1, 50);
@@ -52,7 +53,7 @@ export default async function DashboardPage() {
           variant="warm"
         />
       </div>
-      <div className="relative overflow-hidden rounded-xl border border-warm-700/20 bg-gradient-to-r from-warm-950/80 via-surface-card to-surface-card p-6">
+      <div className="relative overflow-hidden rounded-xl border border-warm-700/20 bg-linear-to-r from-warm-950/80 via-surface-card to-surface-card p-6">
         <div className="relative z-10 flex items-start gap-4">
           <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-warm-600/15 text-warm-400">
             <BarChart3 className="h-6 w-6" />

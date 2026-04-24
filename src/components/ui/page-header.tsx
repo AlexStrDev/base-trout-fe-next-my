@@ -10,16 +10,20 @@ interface PageHeaderProps {
 
 export function PageHeader({ title, description, action, className }: PageHeaderProps) {
   return (
-    <div className={cn('flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between', className)}>
+    <div className={cn('flex flex-col gap-1 sm:flex-row sm:items-start sm:justify-between', className)}>
       <div className="animate-slide-up">
-        <h1 className="text-2xl font-bold font-display text-text-primary tracking-tight">
+        <h1 className="text-2xl font-bold font-display tracking-tight text-text-primary">
           {title}
         </h1>
         {description && (
-          <p className="mt-1 text-sm text-text-muted">{description}</p>
+          <p className="mt-1.5 text-sm text-text-muted leading-relaxed">{description}</p>
         )}
       </div>
-      {action && <div className="mt-3 sm:mt-0 animate-fade-in">{action}</div>}
+      {action && (
+        <div className="mt-3 shrink-0 sm:mt-0.5 animate-fade-in">
+          {action}
+        </div>
+      )}
     </div>
   );
 }

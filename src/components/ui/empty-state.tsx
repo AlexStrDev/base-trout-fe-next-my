@@ -13,19 +13,24 @@ export function EmptyState({ icon, title, description, action, className }: Empt
   return (
     <div
       className={cn(
-        'flex flex-col items-center justify-center rounded-xl border border-dashed border-border',
-        'bg-surface-card/50 px-6 py-16 text-center animate-fade-in',
+        'flex flex-col items-center justify-center rounded-xl',
+        'border border-dashed border-border/70 bg-surface-card/40',
+        'px-8 py-14 text-center animate-fade-in',
         className,
       )}
     >
       {icon && (
-        <div className="mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-trout-800/60 text-trout-400">
-          {icon}
+        <div className="relative mb-5">
+          {/* Glow ring */}
+          <div className="absolute inset-0 rounded-full bg-trout-600/10 blur-xl animate-pulse-soft" />
+          <div className="relative flex h-14 w-14 items-center justify-center rounded-2xl border border-border bg-surface-overlay text-trout-400 animate-float">
+            {icon}
+          </div>
         </div>
       )}
-      <h3 className="text-lg font-semibold font-display text-text-primary">{title}</h3>
-      <p className="mt-1.5 max-w-sm text-sm text-text-muted">{description}</p>
-      {action && <div className="mt-5">{action}</div>}
+      <h3 className="text-base font-semibold font-display text-text-primary">{title}</h3>
+      <p className="mt-2 max-w-xs text-sm text-text-muted leading-relaxed">{description}</p>
+      {action && <div className="mt-6">{action}</div>}
     </div>
   );
 }

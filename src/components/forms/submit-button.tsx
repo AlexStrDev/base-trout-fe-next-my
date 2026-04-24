@@ -1,7 +1,6 @@
 'use client';
 
 import { useFormStatus } from 'react-dom';
-import { Loader2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import type { ReactNode } from 'react';
 
@@ -23,22 +22,40 @@ export function SubmitButton({
       type="submit"
       disabled={pending}
       className={cn(
-        'inline-flex items-center justify-center gap-2 rounded-lg px-5 py-2.5 text-sm font-medium',
-        'bg-lake-600 text-white shadow-sm shadow-lake-900/30',
-        'hover:bg-lake-500 active:bg-lake-700 transition-all duration-200',
-        'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-lake-500/50',
-        'disabled:pointer-events-none disabled:opacity-60',
+        'relative w-full overflow-hidden rounded-xl px-5 py-3 text-sm font-semibold',
+        'bg-lake-600 text-white',
+        'shadow-[0_1px_2px_rgba(0,0,0,0.3),0_2px_8px_rgba(29,116,82,0.25)]',
+        'hover:bg-lake-500 hover:shadow-[0_2px_12px_rgba(29,116,82,0.35)]',
+        'active:scale-[0.98] active:bg-lake-700',
+        'transition-all duration-200 ease-out',
+        'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-lake-500/50 focus-visible:ring-offset-2 focus-visible:ring-offset-surface-card',
+        'disabled:pointer-events-none disabled:opacity-55',
         className,
       )}
     >
-      {pending ? (
-        <>
-          <Loader2 className="h-4 w-4 animate-spin" />
-          {pendingText}
-        </>
-      ) : (
-        children
+      {/* Progress bar while pending */}
+      {pending && (
+        <span
+          className="absolute inset-x-0 bottom-0 h-0.5 bg-lake-300/60 animate-[progress-fill_2.5s_ease-out_both]"
+          aria-hidden
+        />
       )}
+
+      <span className={cn('flex items-center justify-center gap-2 transition-opacity duration-150', pending && 'opacity-70')}>
+        {pending ? (
+          <>
+            {/* Three dots loading */}
+            <span className="flex items-center gap-1" aria-hidden>
+              <span className="h-1.5 w-1.5 rounded-full bg-white/80 animate-[pulse-soft_1.2s_ease-in-out_infinite]" style={{ animationDelay: '0ms' }} />
+              <span className="h-1.5 w-1.5 rounded-full bg-white/80 animate-[pulse-soft_1.2s_ease-in-out_infinite]" style={{ animationDelay: '200ms' }} />
+              <span className="h-1.5 w-1.5 rounded-full bg-white/80 animate-[pulse-soft_1.2s_ease-in-out_infinite]" style={{ animationDelay: '400ms' }} />
+            </span>
+            {pendingText}
+          </>
+        ) : (
+          children
+        )}
+      </span>
     </button>
   );
 }

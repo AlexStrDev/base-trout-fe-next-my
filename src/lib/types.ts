@@ -27,7 +27,6 @@ export interface FarmSummary {
 }
 
 export interface CreateFarmPayload {
-  user_id: string;
   name: string;
   location: string;
 }
@@ -60,20 +59,20 @@ export type SectorStatus = 'activo' | 'inactivo';
 export interface SectorItem {
   id: string;
   name: string;
-  type_cultivation: string;
-  type_lote: string;
+  type_cultivation: TypeCultivation;
+  type_lote: TypeLote;
   area: number;
-  status: string;
+  status: SectorStatus;
   cohort_id: string | null;
 }
 
 export interface SectorSummary {
   sector_id: string;
   name: string;
-  type_cultivation: string;
-  type_lote: string;
+  type_cultivation: TypeCultivation;
+  type_lote: TypeLote;
   area: number;
-  status: string;
+  status: SectorStatus;
   created_at: string;
   updated_at: string;
   cohort_id: string | null;
@@ -98,8 +97,8 @@ export interface CohortItem {
   initial_num: number;
   initial_weight_min_g: number;
   initial_weight_max_g: number;
-  current_stage: string | null;
-  status: string;
+  current_stage: CohortStage | null;
+  status: CohortStatus;
   sampling_count: number;
 }
 
@@ -109,8 +108,8 @@ export interface CohortSummary {
   initial_num: number;
   initial_weight_min_g: number;
   initial_weight_max_g: number;
-  current_stage: string | null;
-  status: string;
+  current_stage: CohortStage | null;
+  status: CohortStatus;
   created_at: string;
   updated_at: string;
   sampling_count: number;
